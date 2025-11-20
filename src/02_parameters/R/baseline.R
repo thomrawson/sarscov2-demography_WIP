@@ -213,11 +213,22 @@ create_baseline <- function(region, date, restart_date,
     
   }
   
+  expected_age_cols <- c(
+    "0-4", "5-9", "10-14", "15-19", "20-24", "25-29",
+    "30-34", "35-39", "40-44", "45-49", "50-54", "55-59",
+    "60-64", "65-69", "70-74", "75-79", "80+"
+  )
   ## Eventually, make this text strings of "default" "ONS 1" "ONS High" "ONS low" etc.
   ## MAke a dataframe that has all regions and ONS counterfactuals to draw from
-  if(population_assumptions == "ONS_demo"){
+  if(population_assumptions == "ONS_NHS_region_principal"){
     #Set to the "region" parameter correctly
-    population_SET <- sircovid:::sircovid_population("london")*2
+    population_SET <- readRDS("ONS_population_projections.rds")
+    population_SET %>%
+      filter(AREA == region) %>%
+      select(-c("AREA", "CODE", "scenario"))-> population_SET
+    stopifnot(names(population_SET) == expected_age_cols)
+    population_SET <- as.integer(round(population_SET))
+    
   } else if(population_assumptions == "rtm_baseline"){
     population_SET <- NULL
   } else{

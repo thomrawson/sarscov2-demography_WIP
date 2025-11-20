@@ -35,7 +35,7 @@ region_map <- c(
   "North West"               = sircovid::regions("england")[5]
 )
 
-population2_wide$AREA <- region_map[population2_wide$AREA]
+population_wide$AREA <- region_map[population_wide$AREA]
 
 ## Set a description of the scenario
 dir.create("outputs")

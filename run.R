@@ -9,4 +9,5 @@ orderly_commit(parsed_data_task)
 # Parameters Task
 
 orderly_run("02_parameters",
+            parameters = list(population_assumptions = "ONS_NHS_region_principal"),
             use_draft = "newer")
