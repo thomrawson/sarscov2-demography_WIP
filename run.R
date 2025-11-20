@@ -8,3 +8,5 @@ orderly_commit(parsed_data_task)
 ################################################
 # Parameters Task
 
+orderly_run("02_parameters",
+            use_draft = "newer")

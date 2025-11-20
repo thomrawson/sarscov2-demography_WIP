@@ -24,6 +24,19 @@ population_wide$`85-89` <- NULL
 population_wide$`80-84` <- NULL
 population_wide$scenario <- "ONS_NHS_region_principal"
 
+## Make region naming consistent:
+region_map <- c(
+  "London"                   = sircovid::regions("england")[2],
+  "South East"               = sircovid::regions("england")[6],
+  "South West"               = sircovid::regions("england")[7],
+  "Midlands"                 = sircovid::regions("england")[3],
+  "North East and Yorkshire" = sircovid::regions("england")[4],
+  "East of England"          = sircovid::regions("england")[1],
+  "North West"               = sircovid::regions("england")[5]
+)
+
+population2_wide$AREA <- region_map[population2_wide$AREA]
+
 ## Set a description of the scenario
 dir.create("outputs")
 saveRDS(population_wide, "outputs/ONS_population_projections.rds")
