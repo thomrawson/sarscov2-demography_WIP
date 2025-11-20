@@ -1,0 +1,17 @@
+script: script.R
+  
+artefacts:
+  - data:
+      description: formatted ONS population projections
+      filenames:
+        - outputs/ONS_population_projections.rds
+
+
+packages:
+  - tidyr
+  - dplyr
+  - readxl
+
+resources:
+  - ONS_data_sheets/popprojreg5yrmigcat22based.xls
+  - ONS_data_sheets/popprojsicb5yrmigcat2322based.xls

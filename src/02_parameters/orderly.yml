@@ -6,7 +6,7 @@ parameters:
   deterministic:
     default: false
   population_assumptions:
-    default: "ONS_demo"
+    default: "ONS_NHS_region_principal"
   
 artefacts:
   - data:
@@ -53,6 +53,7 @@ depends:
       use:
         data_vaccination.csv: outputs/data_vaccination.csv
         weighted_prior_ranges.csv: outputs/weighted_prior_ranges.csv
+        severity_fits_parameters.rds: outputs/severity_fits_parameters.rds
 
 global_resources:
   global_util.R: rtm_inference/util_new.R
