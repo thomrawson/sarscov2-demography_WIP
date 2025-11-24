@@ -1,0 +1,55 @@
+script: script.R
+
+artefacts:
+    - data:
+        description: Deaths in hospitals
+        filenames:
+          - "outputs/model_simulations.rds"
+          - "outputs/index.rds"
+    - staticgraph:
+        description: supplementary figures
+        filenames:
+          - "outputs/model_vs_observed.png"
+
+parameters:
+    region: ~
+    deterministic:
+      default: false
+    assumptions:
+      default: "central"
+    population_assumptions:
+      default: "ONS_NHS_region_principal"
+    vaccine_assumptions:
+      default: "baseline"
+    param_iterations:
+      default: 100
+
+packages:
+  - sircovid
+  - spimalot
+  - tidyr
+  - dust
+  - dplyr
+  - tidyr
+  - ggplot2
+  - scales
+  - purrr
+
+global_resources:
+  global_util.R: rtm_inference/util_new.R
+
+depends:
+  01_parsed_data:
+    id: latest
+    use:
+      data/england_region_data.csv: outputs/england_region_data.csv
+      data/severity_fits_parameters.rds: outputs/severity_fits_parameters.rds
+
+  02_parameters:
+    id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+    use:
+      parameters/base.rds: parameters_base.rds
+      parameters/info.csv: parameters_info.csv
+      parameters/prior.csv: parameters_prior.csv
+      parameters/proposal.csv: parameters_proposal.csv
+      parameters/transform.R: parameters_transform.R
