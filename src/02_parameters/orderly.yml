@@ -7,6 +7,8 @@ parameters:
     default: false
   population_assumptions:
     default: "ONS_NHS_region_principal"
+  vaccine_assumptions:
+    default: "baseline"
   
 artefacts:
   - data:
@@ -53,7 +55,6 @@ depends:
       use:
         data_vaccination.csv: outputs/data_vaccination.csv
         weighted_prior_ranges.csv: outputs/weighted_prior_ranges.csv
-        severity_fits_parameters.rds: outputs/severity_fits_parameters.rds
   - 00_population_projections:
       id: latest
       use:

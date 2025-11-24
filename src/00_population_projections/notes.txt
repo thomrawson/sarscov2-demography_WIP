@@ -1,0 +1,12 @@
+Different projection datasets can be found here:
+https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/bulletins/subnationalpopulationprojectionsforengland/2022based/relateddata?page=2
+
+the nhs regions one can only be got from this:
+https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/datasets/populationprojectionsforsubintegratedcareboardsbyfiveyearagegroupsandsexengland
+
+but note, that doesn't include sensitivities, which we DO have for administrative regions:
+https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/datasets/localauthoritiesinenglandtable2
+
+There's lots of sensitivities, and the "migration category variant edition" is the principle estimate, as discussed here:
+https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/methodologies/methodologyusedtoproducethe2022basedsubnationalpopulationsprojectionsforengland#variant-subnational-population-projections
+

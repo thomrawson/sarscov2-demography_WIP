@@ -25,7 +25,8 @@ regions <- sircovid::regions("england")
 baseline <- lapply(regions, create_baseline,
                    date, NULL, # setting restart_date to NULL
                    epoch_dates, pars$info, assumptions,
-                   population_assumptions = population_assumptions)
+                   population_assumptions = population_assumptions,
+                   vaccine_assumptions = vaccine_assumptions)
 names(baseline) <- regions
 
 message("Writing parameters_info.csv")

@@ -5,7 +5,7 @@
 
 create_baseline <- function(region, date, restart_date,
                             epoch_dates, pars_info, assumptions,
-                            population_assumptions) {
+                            population_assumptions, vaccine_assumptions) {
   message(sprintf("Creating baseline for '%s'", region))
   pars_info <- pars_info[pars_info$region == region | is.na(pars_info$region), ]
   pars_info <- setNames(pars_info$initial, pars_info$name)
@@ -504,6 +504,41 @@ create_baseline <- function(region, date, restart_date,
                                     carehomes = FALSE)
   
   vaccine_schedule_real <- vaccination$schedule
+  
+  ## Here we alter the vaccine schedule for certain sensitivity assumptions:
+  if( vaccine_assumptions == "baseline"){
+    
+  }else if(vaccine_assumptions == "reallocate_same_number"){
+    #Sum over all ages
+    daily_doses_value <- colSums(vaccine_schedule_real$doses, dims = 1L)
+    #Extract booster doses:
+    booster_daily_doses_value <-daily_doses_value[3,]
+    daily_doses_value <- colSums(daily_doses_value[-3,], dims = 1L)
+    date_start <- vaccine_schedule_real$date
+    
+    vaccine_eligibility <-
+      sircovid::vaccine_eligibility(vaccine_eligibility_min_age)
+    if(population_assumptions == "rtm_baseline"){
+      priority_population <- sircovid::vaccine_priority_population(region = region, 
+                                                                   uptake = vaccine_uptake[,1] * vaccine_eligibility)
+    }else if(population_assumptions %in% c("ONS_NHS_region_principal")){
+      priority_population <- 
+        round(sircovid::vaccine_priority_proportion(uptake = vaccine_uptake[,1] * vaccine_eligibility) * c(population_SET, 0, 0))
+    }else{
+      stop("Error: Incompatible vaccine and population assumptions when defining new vaccine schedule.")
+    }
+    #change to _real
+    vaccine_schedule_TEST <- sircovid::vaccine_schedule_future(
+      date_start,
+      daily_doses_value,
+      mean_days_between_doses,
+      priority_population,
+      booster_daily_doses_value = booster_daily_doses_value
+    )
+     
+  } else{
+    stop("Error: Vaccine assumptions not recognised.")
+  }
   
   ## shift doses to account for time between dose and effect of dose
   vaccine_schedule_effect <- shift_doses(vaccine_schedule_real,
