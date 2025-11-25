@@ -83,13 +83,21 @@ for(i in 1:param_iterations){
     ## Return "interesting" state indices:
     ## https://mrc-ide.github.io/sircovid/reference/lancelot_index.html
     index <- c(sircovid::lancelot_index(info)$run,
-               deaths_carehomes = info$index[["D_carehomes_tot"]],
                deaths_comm = info$index[["D_comm_tot"]],
                deaths_hosp = info$index[["D_hosp_tot"]],
                admitted = info$index[["cum_admit_conf"]],
                diagnoses = info$index[["cum_new_conf"]],
                sympt_cases = info$index[["cum_sympt_cases"]],
-               sympt_cases_over25 = info$index[["cum_sympt_cases_over25"]])
+               sympt_cases_over25 = info$index[["cum_sympt_cases_over25"]],
+               D_tot = info$index[["D_tot"]],
+               D_inc = info$index[["D_inc"]],
+               ihr = info$index[["ihr"]],
+               hfr = info$index[["hfr"]],
+               ifr = info$index[["ifr"]],
+               #cum_n_vaccinated = info$index[["cum_n_vaccinated"]], #Currently the dimension causes rbind issues, maybe return to this later
+               S = info$index[["S"]], #Needed for Rt calculations
+               prob_strain = info$index[["prob_strain"]], #Needed for Rt calculations
+               R = info$index[["R"]]) #Needed for Rt calculations
     
     ## Set the "index" vector that is used to return a subset of pars after using run(). 
     ## If this is not used then run() returns all elements in the state vector, which may be excessive and slower than necessary
@@ -100,6 +108,48 @@ for(i in 1:param_iterations){
                        to= end,
                        by = 4)
     res_sim <- mod$simulate(time_series)[,1,]
+    
+    ## Calculate Rt
+    if(multistage_params[[j]]$pars$n_strains == 1){
+      Rt <- sircovid::lancelot_Rt(time = time_series,
+                                  S = matrix(res_sim[grep("^S[0-9]+$", names(index)),], nrow = 19),
+                                  p = multistage_params[[j]]$pars,
+                                  R = NULL, #NULL IF ONE STRAIN
+                                  prob_strain = NULL, #NULL IF ONE STRAIN
+                                  type = NULL,
+                                  weight_Rt = TRUE,
+                                  keep_strains_Rt = TRUE)
+    } else{
+      n_strains <- multistage_params[[j]]$pars$n_strains
+      n_Rs <- multistage_params[[j]]$pars$n_strains_R
+      n_vaccs <- multistage_params[[j]]$pars$n_vacc_classes
+      n_groups <- multistage_params[[j]]$pars$n_groups
+      
+      Rt <- sircovid::lancelot_Rt(time = time_series,
+                                  S = matrix(res_sim[grep("^S[0-9]+$", names(index)),], nrow = n_groups*n_vaccs),
+                                  p = multistage_params[[j]]$pars,
+                                  R = matrix(res_sim[grep("^R[0-9]+$", names(index)),], nrow = n_groups*n_Rs*n_vaccs), 
+                                  prob_strain = matrix(res_sim[grep("prob_strain", names(index)),], nrow = 2), 
+                                  type = NULL,
+                                  weight_Rt = TRUE,
+                                  keep_strains_Rt = FALSE)
+    }
+    ## Update index to include the Rt calculations
+    index["eff_Rt_all"] <- 0L
+    index["eff_Rt_general"] <- 0L
+    index["Rt_all"] <- 0L
+    index["Rt_general"] <- 0L
+    ## And add the trajectories to res_sim
+    res_sim <- rbind(res_sim, 
+                     eff_Rt_all = Rt$eff_Rt_all, 
+                     eff_Rt_general = Rt$eff_Rt_general, 
+                     Rt_all = Rt$Rt_all, 
+                     Rt_general = Rt$Rt_general)
+    
+    ## To save space, we'll now cut the S, prob_strain, and R vectors. From res_sim AND index
+    res_sim <- res_sim[-c(grep("^S[0-9]+$", names(index)), grep("prob_strain", names(index)), grep("^R[0-9]+$", names(index))),]
+    ## And cut them from the index vector too.
+    index <- index[-c(grep("^S[0-9]+$", names(index)), grep("prob_strain", names(index)), grep("^R[0-9]+$", names(index)))]
     
     # For now just keep one, but eventually keep multiple
     #new_hosps <- res_sim[which(names(index) == "deaths_hosp_inc"),]
