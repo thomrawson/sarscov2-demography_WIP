@@ -1,0 +1,74 @@
+script: script.R
+
+parameters:
+    deterministic:
+      default: false
+    assumptions:
+      default: "central"
+    population_assumptions:
+      default: "ONS_NHS_region_principal"
+    vaccine_assumptions:
+      default: "baseline"
+    param_iterations:
+      default: 100
+
+artefacts:
+## The outcome of the combine task.
+
+  - data:
+      description: PMCMC results for combined task
+      filenames:
+        - combined_output_dataframe.rds
+        - index_names.rds
+
+global_resources:
+  global_util.R: rtm_inference/util_new.R
+
+# sources:
+#   - data.R
+  
+packages:
+  - sircovid
+  - spimalot
+  - tidyr
+
+depends:
+  - 03_simulations:
+     id: latest(parameter:region == "east_of_england" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     use:
+        regional_simulations/east_of_england_sim.rds: outputs/model_simulations.rds
+        regional_simulations/east_of_england_index.rds: outputs/index.rds
+  - 03_simulations:
+     id: latest(parameter:region == "london" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     use:
+        regional_simulations/london_sim.rds: outputs/model_simulations.rds
+        regional_simulations/london_index.rds: outputs/index.rds
+  - 03_simulations:
+     id: latest(parameter:region == "midlands" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     use:
+        regional_simulations/midlands_sim.rds: outputs/model_simulations.rds
+        regional_simulations/midlands_index.rds: outputs/index.rds
+  - 03_simulations:
+     id: latest(parameter:region == "north_east_and_yorkshire" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     use:
+        regional_simulations/north_east_and_yorkshire_sim.rds: outputs/model_simulations.rds
+        regional_simulations/north_east_and_yorkshire_index.rds: outputs/index.rds
+  - 03_simulations:
+     id: latest(parameter:region == "north_west" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     use:
+        regional_simulations/north_west_sim.rds: outputs/model_simulations.rds
+        regional_simulations/north_west_index.rds: outputs/index.rds
+  - 03_simulations:
+     id: latest(parameter:region == "south_east" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     use:
+        regional_simulations/south_east_sim.rds: outputs/model_simulations.rds
+        regional_simulations/south_east_index.rds: outputs/index.rds
+  - 03_simulations:
+     id: latest(parameter:region == "south_west" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     use:
+        regional_simulations/south_west_sim.rds: outputs/model_simulations.rds
+        regional_simulations/south_west_index.rds: outputs/index.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        parameters/base.rds: parameters_base.rds
