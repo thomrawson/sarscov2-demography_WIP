@@ -193,8 +193,12 @@ df <- tibble::enframe(lst_row, name = "draw") %>%   # draw = 1..100, value = num
 #   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
 #   geom_point(data = england_data, aes(x = date, y = ons_death_hospital )) +
 #   theme_minimal()
+if(population_assumptions == "rtm_baseline"){
+  total_pop <- sum(sircovid:::sircovid_population(region))
+}else{
+  total_pop <- sum(baseline$population)
+}
 
-total_pop <- sum(baseline$population)
 ggplot() +
   # Simulation ribbon
   geom_ribbon(
