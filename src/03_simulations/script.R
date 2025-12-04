@@ -8,7 +8,7 @@ baseline <- baseline_list[[region]]
 
 epoch_dates <- baseline$epoch_dates
 final_date <- baseline$date
-## Chuck all epoch dates that are beyond our final date
+## Check all epoch dates that are beyond our final date
 epoch_dates <- epoch_dates[epoch_dates <= sircovid_date(final_date)]
 # 2) source the transform helpers (this will define compute_severity(), compute_progression(), compute_observation(), make_transform())
 #source("parameters/transform.R")
