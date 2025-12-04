@@ -29,12 +29,19 @@ packages:
   - ggplot2
   - scales
   - cowplot
+  
+global_resources:
+  global_util.R: rtm_inference/util_new.R
 
 depends:
   - 01_parsed_data:
       id: latest
       use:
         england_region_data.csv: outputs/england_region_data.csv
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        base.rds: parameters_base.rds
   - 04_combine_simulations:
       id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
       use:
