@@ -97,7 +97,16 @@ make_england_from_regions <- function(regional_simulations,
       if (length(rows_to_weight_names) > 0) {
         # compute population-weighted average matrix of same dims:
         # weighted_mat = sum_i (w_i * mat_i)
-        weighted_mat <- Reduce("+", Map(function(m, w) m * w, mats, w_norm))
+        #weighted_mat <- Reduce("+", Map(function(m, w) m * w, mats, w_norm))
+        # Weighted sum ignoring NAs
+        num <- Reduce("+", Map(function(m, w) w * ifelse(is.na(m), 0, m), mats, w_norm))
+        
+        # Sum of weights that contributed
+        den <- Reduce("+", Map(function(m, w) ifelse(is.na(m), 0, w), mats, w_norm))
+        
+        # Final weighted mean (or leave out division if you only want weighted sum)
+        # (Remember, w sums to 1, so this is just inflating up for the missing values.)
+        weighted_mat <- num / den
         
         rnames <- rownames(mats[[1]])
         rows_idx <- match(rows_to_weight_names, rnames)
@@ -171,7 +180,7 @@ summarise_iterations <- function(mat_list, index_names, region_name,
   
   idx <- 1L
   for (j in seq_len(n_out)) {
-    # j corresponds to row index (2...onwards)
+    # j corresponds to row index (2...onwards) skipping time
     row_index <- j + 1L
     # arr[row_index, , ] : a matrix 786 x 1000 (apply over rows => for each timepoint)
     vals_mat <- arr[row_index, , , drop = FALSE]   # dims: 1 x 786 x 1000
@@ -179,15 +188,15 @@ summarise_iterations <- function(mat_list, index_names, region_name,
     vals_mat <- matrix(vals_mat, nrow = n_time, ncol = dim(arr)[3])
     
     # compute mean and quantiles across iterations for each time-step
-    means <- rowMeans(vals_mat)                    # length n_time
+    means <- rowMeans(vals_mat, na.rm = TRUE)                    # length n_time
     
     ## Code in some checks for when ihr/ifr has NaNs:
     quants <- t(apply(vals_mat, 1, function(x) {
-      if (any(is.nan(x))) {
-        return(c(NaN, NaN))
-      } else {
+      # if (any(is.nan(x))) {
+      #   return(c(NaN, NaN))
+      # } else {
         quantile(x, probs = c(lower_prob, upper_prob), names = FALSE, na.rm = TRUE)
-      }
+      # }
     }))
     
     # fill into preallocated vectors
