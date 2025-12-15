@@ -1,3 +1,5 @@
+# Shape file taken from: https://geoportal.statistics.gov.uk/datasets/9d1fd338cdf945b08aabefb8a89e63fa_0/about
+
 ONS_population_projections <- readRDS("ONS_population_projections.rds")
 ## Sum England total:
 age_cols <- grep("[0-9]", colnames(ONS_population_projections), value = TRUE)
@@ -67,7 +69,7 @@ area_to_plot <- "england"
 
 #########################
 saveRDS(pop_wide, "pop_wide.rds")
-
+tight_margin <- margin(t = 6, r = 6, b = 6, l = 6)
 ##############
 scenario_cols <- c(
   "2019_baseline" = "#2B83BA",       # softened blue
@@ -91,7 +93,7 @@ my_theme <- theme_minimal(base_size = 14) +
   )
 
 # top plot (population)
-p1_mod <- ggplot(filter(pop_long, AREA %in% area_to_plot),
+p1_mod <- ggplot(filter(pop_long, AREA %in% "england"),
                  aes(x = age_group, y = population/1e6, fill = scenario)) +
   geom_col(position = position_dodge(width = 0.8), width = 0.86, colour = NA) +
   scale_fill_manual(values = scenario_cols,
@@ -99,7 +101,7 @@ p1_mod <- ggplot(filter(pop_long, AREA %in% area_to_plot),
                                "ONS_NHS_region_principal" = "2047 projection")) +
   scale_y_continuous(labels = label_number(accuracy = 1, suffix = " M"), expand = c(0,0)) +
   scale_x_discrete(expand = c(0,0)) +
-  labs(title = "Population by age group - England",
+  labs(title = "A)    Population by age group - England",
        x = NULL, y = "Population (millions)", fill = "Population Scenario:") +
   guides(fill = guide_legend(nrow = 1, byrow = TRUE, title.position = "left")) +
   my_theme +
@@ -119,7 +121,7 @@ p2_mod <- ggplot(pop_wide %>% filter(AREA == "england"),
   geom_hline(yintercept = 0, color = "black", size = 0.4) +
   scale_y_continuous(labels = function(x) paste0(x, "%"), expand = expansion(mult = c(0, 0.02))) +
   scale_x_discrete(expand = c(0,0)) +
-  labs(title = "Population change from 2019 baseline to 2047 projection",
+  labs(title = "B)   Population change from 2019 to 2047 - England",
        x = "Age group", y = "Difference in population (%)", fill = "Direction") +
   my_theme +
   theme(
@@ -127,15 +129,19 @@ p2_mod <- ggplot(pop_wide %>% filter(AREA == "england"),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-plot_grid(p1_mod, p2_mod, ncol = 1, rel_heights = c(3, 1.5), align = "v") -> p
+plot_grid(p1_mod, p2_mod, ncol = 1, rel_heights = c(3, 1.8), align = "v") -> p_england
 
 ggsave(
   filename = "England_population.png",
-  plot = p,
+  plot = p_england,
   width = 10,      # inches
   height = 8,      # inches
   dpi = 320        # high resolution
 )
+
+p1_mod <- p1_mod + theme(plot.margin = tight_margin)
+p2_mod <- p2_mod + theme(plot.margin = tight_margin)
+plot_grid(p1_mod, p2_mod, ncol = 1, rel_heights = c(3, 1.8), align = "v") -> p_england
 
 dir.create("regional_plots")
 for(r in regions){
@@ -169,14 +175,15 @@ for(r in regions){
     scale_y_continuous(labels = function(x) paste0(x, "%"), expand = expansion(mult = c(0, 0.02))) +
     scale_x_discrete(expand = c(0,0)) +
     labs(title = "Population change from 2019 baseline to 2047 projection",
-         x = "Age group", y = "Difference in population (%)", fill = "Direction") +
+         x = "Age group", y = "Population change (%)", fill = "Direction") +
     my_theme +
     theme(
       legend.position = "none",       # turned off here (we rely on top legend)
       axis.text.x = element_text(angle = 45, hjust = 1)
     )
   
-  plot_grid(p1_mod, p2_mod, ncol = 1, rel_heights = c(3, 1.5), align = "v") -> p
+  plot_grid(p1_mod, p2_mod, ncol = 1, rel_heights = c(3, 1.5), align = "v",
+            labels = c("A", "B")) -> p
   
   ggsave(
     filename = paste0("regional_plots/",r, "_population.png"),
@@ -306,3 +313,105 @@ print(grid_plot)
 
 # Save to file
  ggsave("regional_pct_changes_grid.png", grid_plot, width = 14, height = 12, dpi = 300)
+ 
+ 
+ ################################
+ ## Make a map of England NHS regions shaded by total population & change
+
+ # ---- 1) Read spatial file ----
+ nhs_sf <- st_read("NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp", quiet = FALSE)
+ 
+
+ # ---- 2) Correct region names in nhs_sf ----
+ nhs_sf$AREA <- nhs_sf$NHSER23NM %>%
+   tolower() |>                 # convert to lowercase
+   gsub(" ", "_", x = _)        # replace spaces with underscores
+
+ 
+ # ---- 3) Join the data frame to the spatial data ----
+ nhs_joined <- nhs_sf %>%
+   left_join(totals_df, by = "AREA")
+ 
+ # ---- 4) Compute label points that are guaranteed inside each polygon ----
+ # Use st_point_on_surface (safer than centroid for complex polygons)
+ label_points <- nhs_joined %>%
+   st_point_on_surface() %>%
+   #st_centroid() %>%             # optional fallback - but st_point_on_surface is preferred
+   st_transform(st_crs(nhs_joined))
+ 
+ # Extract coordinates for plotting labels with geom_text (ggplot's geom_sf_text exists but we'll use coords)
+ coords <- st_coordinates(label_points)
+ label_df <- data.frame(coords, pct_change = nhs_joined$pct_change, AREA = nhs_joined$AREA)
+ 
+ # A gentle manual nudge of London's
+ label_df$X[which(label_df$AREA == "london")] <- label_df$X[which(label_df$AREA == "london")] + 8000
+ 
+ # ---- 5) Simplify the geometry ----
+ nhs_simple <- st_simplify(nhs_joined, dTolerance = 800) 
+ 
+ # ---- 6) Plot with ggplot2 ----
+ p_map <- 
+   ggplot() +
+   geom_sf(data = nhs_joined, aes(fill = pct_change/100), color = "grey30", size = 0.3) +
+   # labels inside polygons
+   # geom_text(data = label_df, aes(X, Y, label = ifelse(is.na(pct_change), "", sprintf("%.1f%%", pct_change))),
+   #           size = 3.5, fontface = "bold", family = "sans") +
+   geom_label(
+     data = label_df,
+     aes(X, Y, label = sprintf("%.1f%%", pct_change)),
+     size = 3.5,
+     fontface = "bold",
+     label.size = 0.3,        # removes the border line (optional)
+     label.r = unit(0.25, "lines"),  # rounded corners
+     fill = "white",
+     color = "#4a4a4a"      # soft FT-style charcoal text
+   ) +
+   #scale_fill_viridis(name = "% Population Change", option = "viridis", na.value = "lightgrey") +
+   # scale_fill_gradient(
+   #   #low = "#deebf7",      # very light blue
+   #   #high = "#2c7bb6",     # main blue
+   #   low = "#2c7bb6",
+   #   high = "#fdae61",
+   #   #low = "#e5e8ef",       # light, editorial
+   #   #high = "#5b7fa3",      # muted blue
+   #   name = "% Population Change"
+   # ) +
+   scale_fill_gradient2(
+     low = "#5b7fa3",
+     mid = "#f4efe6",
+     high = "#d39c68",
+     midpoint = 13/100,    # adjust to your data
+     name = "% Increase",
+     labels = scales::percent_format(accuracy = 0.1)
+   ) +
+   coord_sf(datum = NA) +                # drops axis ticks; keeps proper projection
+   theme_minimal() +
+   theme(
+     legend.position = "right",
+     panel.grid = element_blank(),
+     axis.text = element_blank(),
+     axis.title = element_blank(),
+     plot.title = element_text(size = 16, face = "bold", margin = margin(b = 6))
+   ) +
+   ggtitle("C)   Total population change by NHS regions") +
+   #annotation_north_arrow(location = "tr", which_north = "true", style = north_arrow_fancy_orienteering()) +
+   #annotation_scale(location = "bl")
+   theme(
+     legend.position = c(0.25, 0.48),
+     legend.background = element_rect(fill = alpha("white", 0.8), colour = NA),
+     legend.title = element_text(size = 12),
+     legend.text  = element_text(size = 10)
+   )
+ 
+ # ---- save the plot ----
+ ggsave("NHS_pct_change_map.png", p_map, width = 8, height = 10, dpi = 300)
+ 
+ p_map <- p_map + theme(plot.margin = tight_margin)
+# ---- Stitch together the final plot ----
+ 
+ final <- plot_grid(p_england, p_map, ncol = 2, rel_widths = c(1.5, 1), align = "v")
+ final <- final + theme(plot.background = element_rect(fill = "white", colour = NA))
+ #final_patch <- p_england | p_map + plot_layout(widths = c(5, 2))
+ 
+ ggsave("Fig1.png", final, width = 16, height = 8, dpi = 300)
+ 

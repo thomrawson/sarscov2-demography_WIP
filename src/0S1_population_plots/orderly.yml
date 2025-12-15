@@ -13,6 +13,8 @@ artefacts:
       description: supplementary figures
       filenames:
         - England_population.png
+        - NHS_pct_change_map.png
+        - Fig1.png
         - regional_plots/london_population.png
         - regional_plots/south_east_population.png
         - regional_plots/south_west_population.png
@@ -33,6 +35,18 @@ packages:
   - ggplot2
   - scales
   - cowplot
+  - sf
+  - viridis
+  - ggrepel
+  - ggspatial
+  
+resources:
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.cpg
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.dbf
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.prj
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp.xml
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shx
 
 depends:
   - 00_population_projections:
