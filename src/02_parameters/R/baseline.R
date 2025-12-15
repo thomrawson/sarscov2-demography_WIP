@@ -528,7 +528,7 @@ create_baseline <- function(region, date, restart_date,
       stop("Error: Incompatible vaccine and population assumptions when defining new vaccine schedule.")
     }
     #change to _real
-    vaccine_schedule_TEST <- sircovid::vaccine_schedule_future(
+    vaccine_schedule_real <- sircovid::vaccine_schedule_future(
       date_start,
       daily_doses_value,
       mean_days_between_doses,
