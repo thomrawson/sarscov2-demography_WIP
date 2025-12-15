@@ -5,6 +5,7 @@ artefacts:
         description: Deaths in hospitals
         filenames:
           - "outputs/model_simulations.rds"
+          - "outputs/vaccine_simulations.rds"
           - "outputs/index.rds"
     - staticgraph:
         description: supplementary figures

@@ -42,6 +42,7 @@ severity_fits_parameters <- readRDS("data/severity_fits_parameters.rds")
 severity_fits_parameters <- severity_fits_parameters[[region]]
 
 final_hosps <- list()
+final_vaccs <- list()
 
 ## Can I actually parallelise this?
 for(i in 1:param_iterations){
@@ -51,6 +52,7 @@ for(i in 1:param_iterations){
   # 6) call the transform to get the multistage parameters object
   multistage_params <- transform_fun(numeric_initial)
   iteration_hosps <- NULL
+  iteration_vaccs <- NULL
   for(j in 1:(length(epoch_dates)+1)){
     mod <- sircovid::lancelot$new(multistage_params[[j]]$pars, ifelse(j==1, 0, (epoch_dates[j-1]/multistage_params[[j-1]]$pars$dt)-1),
                                   1) #, seed = 1L) #pars, init time, and n_particles
@@ -97,7 +99,8 @@ for(i in 1:param_iterations){
                #cum_n_vaccinated = info$index[["cum_n_vaccinated"]], #Currently the dimension causes rbind issues, maybe return to this later
                S = info$index[["S"]], #Needed for Rt calculations
                prob_strain = info$index[["prob_strain"]], #Needed for Rt calculations
-               R = info$index[["R"]]) #Needed for Rt calculations
+               R = info$index[["R"]], #Needed for Rt calculations
+               cum_vaccinated = info$index[["cum_n_vaccinated"]])
     
     ## Set the "index" vector that is used to return a subset of pars after using run(). 
     ## If this is not used then run() returns all elements in the state vector, which may be excessive and slower than necessary
@@ -151,6 +154,19 @@ for(i in 1:param_iterations){
     ## And cut them from the index vector too.
     index <- index[-c(grep("^S[0-9]+$", names(index)), grep("prob_strain", names(index)), grep("^R[0-9]+$", names(index)))]
     
+    ## Also, because vaccine dimensions keep changing, it'll likely be safer to just save them in a separate item.
+    res_vacc <- res_sim[grep("^cum_vaccinated[0-9]+$", names(index)),]
+    if(!is.null(iteration_vaccs)){
+      vacc_dim <- max(nrow(iteration_vaccs), nrow(res_vacc))
+      if(nrow(iteration_vaccs) < vacc_dim){
+        missing_rows <- vacc_dim - nrow(iteration_vaccs)
+        iteration_vaccs <- rbind(iteration_vaccs, matrix(0, nrow = missing_rows, ncol = ncol(iteration_vaccs)))
+      }
+    }
+    iteration_vaccs <- cbind(iteration_vaccs, res_vacc)
+    ## Now remove cum_n_vaccinated from res_sim and index:
+    res_sim <- res_sim[-grep("^cum_vaccinated[0-9]+$", names(index)),]
+    index <- index[-grep("^cum_vaccinated[0-9]+$", names(index))]
     # For now just keep one, but eventually keep multiple
     #new_hosps <- res_sim[which(names(index) == "deaths_hosp_inc"),]
     # Change to cbind when keeping multiple
@@ -159,9 +175,11 @@ for(i in 1:param_iterations){
     old_info <- info
     }
   final_hosps[[i]] <- iteration_hosps
+  final_vaccs[[i]] <- iteration_vaccs
 }
 dir.create("outputs")
 saveRDS(final_hosps, "outputs/model_simulations.rds")
+saveRDS(final_vaccs, "outputs/vaccine_simulations.rds")
 saveRDS(index, "outputs/index.rds")
 
 england_data <- read_csv("data/england_region_data.csv")
