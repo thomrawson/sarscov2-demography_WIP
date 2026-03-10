@@ -3,6 +3,9 @@
 .Rhistory
 .RData
 .Ruserdata
+src/Christophe_parameters
+src/Christophe_simulations
+src/Christophe_combine_simulations
 src/*.o
 src/*.so
 src/*.dll
