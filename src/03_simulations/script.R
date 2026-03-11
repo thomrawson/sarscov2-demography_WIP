@@ -75,12 +75,12 @@ for(i in 1:param_iterations){
     
     ## We must now save a snapshot of the full state at the end, 
     ## so we can later transform it into the next initial state
-    where_we_left_off <- mod$run(end)[,1]
+    # where_we_left_off <- mod$run(end)[,1]
     
     ## Now, define again to "simulate" (keep all times)
-    mod <- sircovid::lancelot$new(multistage_params[[j]]$pars, ifelse(j==1, 0, (epoch_dates[j-1]/multistage_params[[j]]$pars$dt)-1),
-                                  1) #, seed = 1L)
-    mod$update_state(state = initial)
+    # mod <- sircovid::lancelot$new(multistage_params[[j]]$pars, ifelse(j==1, 0, (epoch_dates[j-1]/multistage_params[[j]]$pars$dt)-1),
+    #                               1) #, seed = 1L)
+    # mod$update_state(state = initial)
     
     ## Return "interesting" state indices:
     ## https://mrc-ide.github.io/sircovid/reference/lancelot_index.html
@@ -111,6 +111,11 @@ for(i in 1:param_iterations){
                        to= end,
                        by = 4)
     res_sim <- mod$simulate(time_series)[,1,]
+    
+    # Expand to the full state space again to extract our initialisation point for the next epoch
+    mod$set_index(seq(1,length(initial)))
+    # And extract the end point:
+    where_we_left_off <- mod$run(end+1)[,1]
     
     ## Calculate Rt
     if(multistage_params[[j]]$pars$n_strains == 1){
