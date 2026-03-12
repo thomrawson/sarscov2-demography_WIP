@@ -536,7 +536,16 @@ create_baseline <- function(region, date, restart_date,
       booster_daily_doses_value = booster_daily_doses_value
     )
      
-  } else{
+  } else if(vaccine_assumptions == "baseline_scaled_up"){
+    # Here we just multiply the daily doses to match the increase/decrease in the population of each group
+    #First calculate the population difference
+    baseline_pop <- sircovid:::sircovid_population(region)
+    difference_in_pop <- population_SET/baseline_pop
+    hold_new_pop <- round(vaccine_schedule_real$doses*c(difference_in_pop,0,0) #Add the CHW CHR at the end
+                          ) 
+    # And set it
+    vaccine_schedule_real$doses <- hold_new_pop
+  }else{
     stop("Error: Vaccine assumptions not recognised.")
   }
   
