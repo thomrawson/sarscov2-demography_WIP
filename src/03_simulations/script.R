@@ -115,7 +115,7 @@ for(i in 1:param_iterations){
     # Expand to the full state space again to extract our initialisation point for the next epoch
     mod$set_index(seq(1,length(initial)))
     # And extract the end point:
-    where_we_left_off <- mod$run(end+1)[,1]
+    where_we_left_off <- mod$run(end)[,1]
     
     ## Calculate Rt
     if(multistage_params[[j]]$pars$n_strains == 1){
