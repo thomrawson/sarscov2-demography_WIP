@@ -227,20 +227,23 @@ ggplot() +
   geom_ribbon(
     data = df,
     aes(x = as.Date(sircovid::sircovid_date_as_date(time)), 
-        ymin = lower/total_pop*1000, ymax = upper/total_pop*1000, fill = "95% CrI"),
+        ymin = lower/total_pop*1000, 
+        ymax = upper/total_pop*1000, 
+        fill = "95% CrI"),
     alpha = 0.18,
     colour = NA
   ) +
   # Simulation mean
   geom_line(
     data = df,
-    aes(x = as.Date(sircovid::sircovid_date_as_date(time)), y = mean/total_pop*1000, colour = "Model mean"),
+    aes(x = as.Date(sircovid::sircovid_date_as_date(time)), y = mean/total_pop*1000, 
+        colour = "Model mean"),
     size = 1.1
   ) +
   # Observed data
   geom_point(
     data = england_data,
-    aes(x = as.Date(sircovid::sircovid_date_as_date(date)), y = ons_death_hospital/total_pop*1000, colour = "Observed"),
+    aes(x = as.Date(sircovid::sircovid_date_as_date(date)), y = ons_death_hospital/sum(sircovid:::sircovid_population(region))*1000, colour = "Observed"),
     size = 2.2,
     alpha = 0.65
   ) +

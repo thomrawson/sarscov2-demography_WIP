@@ -55,7 +55,7 @@ dont_sum <- c("time",
               "eff_Rt_all", "eff_Rt_general",
               "Rt_all", "Rt_general")
 
-# Inputs you must provide:
+# Inputs I provide:
 # regional_simulations : list of length 7 (regions), each is a list length param_iterations of matrices (n_row x n_col)
 # param_iterations     : integer, number of iterations (e.g. 100)
 # pop                  : numeric vector length 7, population per region (used as weights)
