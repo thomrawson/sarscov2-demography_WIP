@@ -2,6 +2,8 @@ library(readxl)
 library(dplyr)
 library(tidyr)
 
+# Central estimates
+###################
 population <- read_excel("ONS_data_sheets/popprojsicb5yrmigcat2322based.xls", 
                          sheet = "Persons", skip = 3)
 population <- population[,c("CODE", "AREA", "AGE GROUP", "2047")]
@@ -36,7 +38,159 @@ region_map <- c(
 )
 
 population_wide$AREA <- region_map[population_wide$AREA]
+ONS_forecasts <- population_wide
+
+#Load lookup table:
+LTLA_to_NHS_region <- read.csv("ONS_data_sheets/LTLA_to_Region.csv")
+#Save CODE column:
+
+# Low migration scenario:
+###########################
+population <- read_excel("ONS_data_sheets/popprojla5yrlow22based.xls", 
+                         sheet = "Persons", skip = 3)
+population <- population[,c("CODE", "AREA", "AGE GROUP", "2047")]
+#Filter out everything that doesn't start E0
+population <- population %>% 
+  filter(startsWith(CODE, "E0"))
+population$`2047` <- as.numeric(population$`2047`)
+#309 regions
+regions_in_data_sheet <- unique(population$CODE)
+regions_in_look_up <- unique(LTLA_to_NHS_region$LAD21CD)
+if (any(!(regions_in_data_sheet %in% regions_in_look_up))) {
+  stop("Error: region code in data sheet not found in lookup table")
+}
+if (any(!(regions_in_look_up %in% regions_in_data_sheet))) {
+  stop("Error: region code in lookup table not accounted for in data")
+}
+
+# Convert from LTLA to nhs_region
+population_region <- population %>%
+  left_join(
+    LTLA_to_NHS_region %>% select(LAD21CD, RGN21NM),
+    by = c("CODE" = "LAD21CD")
+  ) %>%
+  # add a new column with the NHS region
+  rename(NHS_region = RGN21NM) %>%
+  # replace the AREA column with region where join succeeded
+  mutate(AREA = coalesce(NHS_region, AREA))
+
+#Check that all converted:
+if (any(!(population_region$AREA == population_region$NHS_region))) {
+  stop("Error: population AREA did not map.")
+}
+
+#Sum all region totals together
+population_region$NHS_region <- NULL
+population_region <- filter(population_region, `AGE GROUP` != "All ages")
+sum_before_aggregate <- sum(population_region$`2047`)
+
+population_agg <- population_region %>%
+  group_by(AREA, `AGE GROUP`) %>%
+  summarise(
+    `2047` = sum(`2047`, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+sum_after_aggregate <- sum(population_agg$`2047`)
+
+population_wide <- population_agg %>%
+  pivot_wider(
+    names_from = 'AGE GROUP',
+    values_from = '2047'
+  )
+## Combine last 3 into 80+:
+population_wide$`80+` <- population_wide$`80-84` + population_wide$`85-89` + population_wide$`90+`
+#Cut the originals
+population_wide$`90+` <- NULL
+population_wide$`85-89` <- NULL
+population_wide$`80-84` <- NULL
+population_wide$scenario <- "ONS_NHS_region_low_migration"
+#set code
+population_wide <- population_wide %>%
+  left_join(
+    ONS_forecasts %>%
+      select(AREA, CODE) %>%
+      distinct(),   # important: avoid duplicates
+    by = "AREA"
+  )
+
+#Bind together
+ONS_forecasts <- rbind(ONS_forecasts, population_wide)
+
+######################################################
+#High migration
+population <- read_excel("ONS_data_sheets/popprojla5yrhigh2022based.xls", 
+                         sheet = "Persons", skip = 3)
+population <- population[,c("CODE", "AREA", "AGE GROUP", "2047")]
+#Filter out everything that doesn't start E0
+population <- population %>% 
+  filter(startsWith(CODE, "E0"))
+population$`2047` <- as.numeric(population$`2047`)
+#309 regions
+regions_in_data_sheet <- unique(population$CODE)
+regions_in_look_up <- unique(LTLA_to_NHS_region$LAD21CD)
+if (any(!(regions_in_data_sheet %in% regions_in_look_up))) {
+  stop("Error: region code in data sheet not found in lookup table")
+}
+if (any(!(regions_in_look_up %in% regions_in_data_sheet))) {
+  stop("Error: region code in lookup table not accounted for in data")
+}
+
+# Convert from LTLA to nhs_region
+population_region <- population %>%
+  left_join(
+    LTLA_to_NHS_region %>% select(LAD21CD, RGN21NM),
+    by = c("CODE" = "LAD21CD")
+  ) %>%
+  # add a new column with the NHS region
+  rename(NHS_region = RGN21NM) %>%
+  # replace the AREA column with region where join succeeded
+  mutate(AREA = coalesce(NHS_region, AREA))
+
+#Check that all converted:
+if (any(!(population_region$AREA == population_region$NHS_region))) {
+  stop("Error: population AREA did not map.")
+}
+
+#Sum all region totals together
+population_region$NHS_region <- NULL
+population_region <- filter(population_region, `AGE GROUP` != "All ages")
+sum_before_aggregate <- sum(population_region$`2047`)
+
+population_agg <- population_region %>%
+  group_by(AREA, `AGE GROUP`) %>%
+  summarise(
+    `2047` = sum(`2047`, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+sum_after_aggregate <- sum(population_agg$`2047`)
+
+population_wide <- population_agg %>%
+  pivot_wider(
+    names_from = 'AGE GROUP',
+    values_from = '2047'
+  )
+## Combine last 3 into 80+:
+population_wide$`80+` <- population_wide$`80-84` + population_wide$`85-89` + population_wide$`90+`
+#Cut the originals
+population_wide$`90+` <- NULL
+population_wide$`85-89` <- NULL
+population_wide$`80-84` <- NULL
+population_wide$scenario <- "ONS_NHS_region_high_migration"
+#set code
+population_wide <- population_wide %>%
+  left_join(
+    ONS_forecasts %>%
+      select(AREA, CODE) %>%
+      distinct(),   # important: avoid duplicates
+    by = "AREA"
+  )
+
+#Bind together
+ONS_forecasts <- rbind(ONS_forecasts, population_wide)
+
 
 ## Set a description of the scenario
 dir.create("outputs")
-saveRDS(population_wide, "outputs/ONS_population_projections.rds")
+saveRDS(ONS_forecasts, "outputs/ONS_population_projections.rds")

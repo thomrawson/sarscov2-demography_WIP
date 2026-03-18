@@ -15,3 +15,7 @@ packages:
 resources:
   - ONS_data_sheets/popprojreg5yrmigcat22based.xls
   - ONS_data_sheets/popprojsicb5yrmigcat2322based.xls
+  - ONS_data_sheets/popprojla5yrhigh2022based.xls
+  - ONS_data_sheets/popprojla5yrlow22based.xls
+  - ONS_data_sheets/popprojla5yrzeronet22based.xls
+  - ONS_data_sheets/LTLA_to_Region.csv
