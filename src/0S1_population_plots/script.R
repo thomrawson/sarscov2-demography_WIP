@@ -1,6 +1,11 @@
 # Shape file taken from: https://geoportal.statistics.gov.uk/datasets/9d1fd338cdf945b08aabefb8a89e63fa_0/about
 
 ONS_population_projections <- readRDS("ONS_population_projections.rds")
+if(population_assumptions %in% c("ONS_NHS_region_principal", "ONS_NHS_region_low_migration", "ONS_NHS_region_high_migration")){
+  ONS_population_projections <- filter(ONS_population_projections, scenario == population_assumptions)
+} else(
+  stop("population_assumptions not recognised")
+)
 ## Sum England total:
 age_cols <- grep("[0-9]", colnames(ONS_population_projections), value = TRUE)
 
@@ -8,7 +13,7 @@ england_row <- ONS_population_projections %>%
   summarise(across(all_of(age_cols), sum, na.rm = TRUE)) %>%
   mutate(AREA = "england",
          CODE = NA,          # or whatever value you want
-         scenario = "ONS_NHS_region_principal") %>% 
+         scenario = population_assumptions) %>% 
   select(CODE, AREA, all_of(age_cols), scenario)
 
 ONS_population_projections <- rbind(ONS_population_projections, england_row)
@@ -18,9 +23,9 @@ regions <- unique(ONS_population_projections$AREA)
 pop_list <- lapply(regions, sircovid:::sircovid_population)
 pop_df <- do.call(rbind, pop_list) |> 
   as.data.frame()
-colnames(pop_df) <- age_cols   # assign your age columns
+colnames(pop_df) <- age_cols   # assign age columns
 pop_df$AREA <- regions
-pop_df$CODE <- NA            # or region codes if you have them
+pop_df$CODE <- NA            # or region codes 
 pop_df$scenario <- "2019_baseline"        # or set something
 
 df <- rbind(pop_df, ONS_population_projections)
@@ -46,7 +51,7 @@ pop_wide <- pop_long %>%
 pop_wide <- pop_wide %>%
   rename(
     baseline = `2019_baseline`,
-    ons_proj = `ONS_NHS_region_principal`
+    ons_proj = population_assumptions
   ) %>%
   mutate(
     diff = ons_proj - baseline,
@@ -73,7 +78,9 @@ tight_margin <- margin(t = 6, r = 6, b = 6, l = 6)
 ##############
 scenario_cols <- c(
   "2019_baseline" = "#2B83BA",       # softened blue
-  "ONS_NHS_region_principal" = "#E69F00"  # orange
+  "ONS_NHS_region_principal" = "#E69F00",  # orange
+  "ONS_NHS_region_low_migration" = "#E69F00",  # orange
+  "ONS_NHS_region_high_migration" = "#E69F00"  # orange
 )
 diff_cols <- c("TRUE" = "#2c7bb6", "FALSE" = "#d7191c")
 
@@ -98,7 +105,9 @@ p1_mod <- ggplot(filter(pop_long, AREA %in% "england"),
   geom_col(position = position_dodge(width = 0.8), width = 0.86, colour = NA) +
   scale_fill_manual(values = scenario_cols,
                     labels = c("2019_baseline" = "2019 baseline", 
-                               "ONS_NHS_region_principal" = "2047 projection")) +
+                               "ONS_NHS_region_principal" = "2047 central projection",
+                               "ONS_NHS_region_principal" = "2047 low migration projection",
+                               "ONS_NHS_region_principal" = "2047 high migration projection")) +
   scale_y_continuous(labels = label_number(accuracy = 1, suffix = " M"), expand = c(0,0)) +
   scale_x_discrete(expand = c(0,0)) +
   labs(title = "A)    Population by age group - England",
@@ -151,7 +160,9 @@ for(r in regions){
     geom_col(position = position_dodge(width = 0.8), width = 0.86, colour = NA) +
     scale_fill_manual(values = scenario_cols,
                       labels = c("2019_baseline" = "2019 baseline", 
-                                 "ONS_NHS_region_principal" = "2047 projection")) +
+                                 "ONS_NHS_region_principal" = "2047 projection",
+                                 "ONS_NHS_region_principal" = "2047 low migration projection",
+                                 "ONS_NHS_region_principal" = "2047 high migration projection")) +
     scale_y_continuous(labels = label_number(accuracy = 1, suffix = " M"), expand = c(0,0)) +
     scale_x_discrete(expand = c(0,0)) +
     labs(title = paste0("Population by age group — ", r),
@@ -253,7 +264,7 @@ region_plots <- lapply(seq_along(regions), function(i) {
 # Summary panel: total population percent change or absolute diff per region
 totals_df <- pop_long %>%
   pivot_wider(names_from = scenario, values_from = population) %>%
-  rename(baseline = `2019_baseline`, ons_proj = `ONS_NHS_region_principal`) %>%
+  rename(baseline = `2019_baseline`, ons_proj = population_assumptions) %>%
   group_by(AREA) %>%
   summarise(total_baseline = sum(baseline, na.rm = TRUE),
             total_ons = sum(ons_proj, na.rm = TRUE)) %>%

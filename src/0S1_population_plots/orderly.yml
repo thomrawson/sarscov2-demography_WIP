@@ -39,6 +39,7 @@ packages:
   - viridis
   - ggrepel
   - ggspatial
+  - patchwork
   
 resources:
   - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.cpg
