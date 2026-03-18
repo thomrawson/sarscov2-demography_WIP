@@ -223,10 +223,32 @@ create_baseline <- function(region, date, restart_date,
   if(population_assumptions == "ONS_NHS_region_principal"){
     #Set to the "region" parameter correctly
     population_SET <- readRDS("ONS_population_projections.rds")
-    population_SET %>%
+    population_SET %>% 
+      filter(scenario == "ONS_NHS_region_principal") %>%
       filter(AREA == region) %>%
       select(-c("AREA", "CODE", "scenario"))-> population_SET
     stopifnot(names(population_SET) == expected_age_cols)
+    stopifnot(nrow(population_SET) == 1)
+    population_SET <- as.integer(round(population_SET))
+    
+  } else if(population_assumptions == "ONS_NHS_region_low_migration"){
+    population_SET <- readRDS("ONS_population_projections.rds")
+    population_SET %>% 
+      filter(scenario == "ONS_NHS_region_low_migration") %>%
+      filter(AREA == region) %>%
+      select(-c("AREA", "CODE", "scenario"))-> population_SET
+    stopifnot(names(population_SET) == expected_age_cols)
+    stopifnot(nrow(population_SET) == 1)
+    population_SET <- as.integer(round(population_SET))
+    
+  } else if(population_assumptions == "ONS_NHS_region_high_migration"){
+    population_SET <- readRDS("ONS_population_projections.rds")
+    population_SET %>% 
+      filter(scenario == "ONS_NHS_region_high_migration") %>%
+      filter(AREA == region) %>%
+      select(-c("AREA", "CODE", "scenario"))-> population_SET
+    stopifnot(names(population_SET) == expected_age_cols)
+    stopifnot(nrow(population_SET) == 1)
     population_SET <- as.integer(round(population_SET))
     
   } else if(population_assumptions == "rtm_baseline"){
@@ -521,7 +543,7 @@ create_baseline <- function(region, date, restart_date,
     if(population_assumptions == "rtm_baseline"){
       priority_population <- sircovid::vaccine_priority_population(region = region, 
                                                                    uptake = vaccine_uptake[,1] * vaccine_eligibility)
-    }else if(population_assumptions %in% c("ONS_NHS_region_principal")){
+    }else if(population_assumptions %in% c("ONS_NHS_region_principal", "ONS_NHS_region_low", "ONS_NHS_region_high")){
       priority_population <- 
         round(sircovid::vaccine_priority_proportion(uptake = vaccine_uptake[,1] * vaccine_eligibility) * c(population_SET, 0, 0))
     }else{
