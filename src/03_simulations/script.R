@@ -46,7 +46,8 @@ final_vaccs <- list()
 
 ## Can I actually parallelise this?
 for(i in 1:param_iterations){
-  numeric_initial <- severity_fits_parameters[i,]
+  idx <- ((i - 1) %% nrow(severity_fits_parameters)) + 1
+  numeric_initial <- severity_fits_parameters[idx,]
   if (is.null(names(numeric_initial))) stop("initial vector is not named — something unexpected in pars_meta$mcmc$initial()")
   
   # 6) call the transform to get the multistage parameters object
