@@ -6,16 +6,30 @@ library(tidyr)
 ###################
 population <- read_excel("ONS_data_sheets/popprojsicb5yrmigcat2322based.xls", 
                          sheet = "Persons", skip = 3)
-population <- population[,c("CODE", "AREA", "AGE GROUP", "2047")]
+population <- population[,c("CODE", "AREA", "AGE GROUP", "2027", "2032", "2037", "2042","2047")]
 population <- population %>% 
   filter(startsWith(CODE, "E4"))
 population$`2047` <- as.numeric(population$`2047`)
+population$`2042` <- as.numeric(population$`2042`)
+population$`2037` <- as.numeric(population$`2037`)
+population$`2032` <- as.numeric(population$`2032`)
+population$`2027` <- as.numeric(population$`2027`)
 
-population_wide <- population %>%
+population_long <- population %>%
+  pivot_longer(
+    cols = c(`2027`, `2032`, `2037`, `2042`, `2047`),
+    names_to = "year",
+    values_to = "population"
+  ) %>%
+  mutate(year = as.integer(year))
+
+population_wide <- population_long %>%
   pivot_wider(
+    id_cols = c(CODE, AREA, year),
     names_from = 'AGE GROUP',
-    values_from = '2047'
+    values_from = population
   )
+
 ## Cut "all ages"
 population_wide$`All ages` <- NULL
 ## Combine last 3 into 80+:
@@ -42,17 +56,20 @@ ONS_forecasts <- population_wide
 
 #Load lookup table:
 LTLA_to_NHS_region <- read.csv("ONS_data_sheets/LTLA_to_Region.csv")
-#Save CODE column:
 
 # Low migration scenario:
 ###########################
 population <- read_excel("ONS_data_sheets/popprojla5yrlow22based.xls", 
                          sheet = "Persons", skip = 3)
-population <- population[,c("CODE", "AREA", "AGE GROUP", "2047")]
+population <- population[,c("CODE", "AREA", "AGE GROUP", "2027", "2032", "2037", "2042","2047")]
 #Filter out everything that doesn't start E0
 population <- population %>% 
   filter(startsWith(CODE, "E0"))
 population$`2047` <- as.numeric(population$`2047`)
+population$`2042` <- as.numeric(population$`2042`)
+population$`2037` <- as.numeric(population$`2037`)
+population$`2032` <- as.numeric(population$`2032`)
+population$`2027` <- as.numeric(population$`2027`)
 #309 regions
 regions_in_data_sheet <- unique(population$CODE)
 regions_in_look_up <- unique(LTLA_to_NHS_region$LAD21CD)
@@ -88,16 +105,30 @@ population_agg <- population_region %>%
   group_by(AREA, `AGE GROUP`) %>%
   summarise(
     `2047` = sum(`2047`, na.rm = TRUE),
+    `2042` = sum(`2042`, na.rm = TRUE),
+    `2037` = sum(`2037`, na.rm = TRUE),
+    `2032` = sum(`2032`, na.rm = TRUE),
+    `2027` = sum(`2027`, na.rm = TRUE),
     .groups = "drop"
   )
 
 sum_after_aggregate <- sum(population_agg$`2047`)
 
-population_wide <- population_agg %>%
+population_long <- population_agg %>%
+  pivot_longer(
+    cols = c(`2027`, `2032`, `2037`, `2042`, `2047`),
+    names_to = "year",
+    values_to = "population"
+  ) %>%
+  mutate(year = as.integer(year))
+
+population_wide <- population_long %>%
   pivot_wider(
+    id_cols = c(AREA, year),
     names_from = 'AGE GROUP',
-    values_from = '2047'
+    values_from = population
   )
+
 ## Combine last 3 into 80+:
 population_wide$`80+` <- population_wide$`80-84` + population_wide$`85-89` + population_wide$`90+`
 #Cut the originals
@@ -121,11 +152,15 @@ ONS_forecasts <- rbind(ONS_forecasts, population_wide)
 #High migration
 population <- read_excel("ONS_data_sheets/popprojla5yrhigh2022based.xls", 
                          sheet = "Persons", skip = 3)
-population <- population[,c("CODE", "AREA", "AGE GROUP", "2047")]
+population <- population[,c("CODE", "AREA", "AGE GROUP", "2027", "2032", "2037", "2042","2047")]
 #Filter out everything that doesn't start E0
 population <- population %>% 
   filter(startsWith(CODE, "E0"))
 population$`2047` <- as.numeric(population$`2047`)
+population$`2042` <- as.numeric(population$`2042`)
+population$`2037` <- as.numeric(population$`2037`)
+population$`2032` <- as.numeric(population$`2032`)
+population$`2027` <- as.numeric(population$`2027`)
 #309 regions
 regions_in_data_sheet <- unique(population$CODE)
 regions_in_look_up <- unique(LTLA_to_NHS_region$LAD21CD)
@@ -161,16 +196,30 @@ population_agg <- population_region %>%
   group_by(AREA, `AGE GROUP`) %>%
   summarise(
     `2047` = sum(`2047`, na.rm = TRUE),
+    `2042` = sum(`2042`, na.rm = TRUE),
+    `2037` = sum(`2037`, na.rm = TRUE),
+    `2032` = sum(`2032`, na.rm = TRUE),
+    `2027` = sum(`2027`, na.rm = TRUE),
     .groups = "drop"
   )
 
 sum_after_aggregate <- sum(population_agg$`2047`)
 
-population_wide <- population_agg %>%
+population_long <- population_agg %>%
+  pivot_longer(
+    cols = c(`2027`, `2032`, `2037`, `2042`, `2047`),
+    names_to = "year",
+    values_to = "population"
+  ) %>%
+  mutate(year = as.integer(year))
+
+population_wide <- population_long %>%
   pivot_wider(
+    id_cols = c(AREA, year),
     names_from = 'AGE GROUP',
-    values_from = '2047'
+    values_from = population
   )
+
 ## Combine last 3 into 80+:
 population_wide$`80+` <- population_wide$`80-84` + population_wide$`85-89` + population_wide$`90+`
 #Cut the originals

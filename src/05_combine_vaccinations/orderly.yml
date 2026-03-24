@@ -7,6 +7,8 @@ parameters:
       default: "central"
     population_assumptions:
       default: "ONS_NHS_region_principal"
+    population_year:
+      default: 2019
     vaccine_assumptions:
       default: "baseline"
     param_iterations:
@@ -34,35 +36,35 @@ packages:
 
 depends:
   - 03_simulations:
-     id: latest(parameter:region == "east_of_england" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     id: latest(parameter:region == "east_of_england" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
      use:
         regional_vaccinations/east_of_england_vaccinations.rds: outputs/vaccine_simulations.rds
         east_of_england_sim.rds: outputs/model_simulations.rds
   - 03_simulations:
-     id: latest(parameter:region == "london" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     id: latest(parameter:region == "london" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
      use:
         regional_vaccinations/london_vaccinations.rds: outputs/vaccine_simulations.rds
   - 03_simulations:
-     id: latest(parameter:region == "midlands" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     id: latest(parameter:region == "midlands" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
      use:
         regional_vaccinations/midlands_vaccinations.rds: outputs/vaccine_simulations.rds
   - 03_simulations:
-     id: latest(parameter:region == "north_east_and_yorkshire" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     id: latest(parameter:region == "north_east_and_yorkshire" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
      use:
         regional_vaccinations/north_east_and_yorkshire_vaccinations.rds: outputs/vaccine_simulations.rds
   - 03_simulations:
-     id: latest(parameter:region == "north_west" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     id: latest(parameter:region == "north_west" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
      use:
         regional_vaccinations/north_west_vaccinations.rds: outputs/vaccine_simulations.rds
   - 03_simulations:
-     id: latest(parameter:region == "south_east" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     id: latest(parameter:region == "south_east" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
      use:
         regional_vaccinations/south_east_vaccinations.rds: outputs/vaccine_simulations.rds
   - 03_simulations:
-     id: latest(parameter:region == "south_west" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+     id: latest(parameter:region == "south_west" && parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
      use:
         regional_vaccinations/south_west_vaccinations.rds: outputs/vaccine_simulations.rds
   - 02_parameters:
-      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
       use:
         parameters/base.rds: parameters_base.rds

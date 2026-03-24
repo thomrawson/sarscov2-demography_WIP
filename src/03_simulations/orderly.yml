@@ -20,6 +20,8 @@ parameters:
       default: "central"
     population_assumptions:
       default: "ONS_NHS_region_principal"
+    population_year:
+      default: 2019
     vaccine_assumptions:
       default: "baseline"
     param_iterations:
@@ -47,7 +49,7 @@ depends:
       data/severity_fits_parameters.rds: outputs/severity_fits_parameters.rds
 
   02_parameters:
-    id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:vaccine_assumptions == vaccine_assumptions)
+    id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
     use:
       parameters/base.rds: parameters_base.rds
       parameters/info.csv: parameters_info.csv

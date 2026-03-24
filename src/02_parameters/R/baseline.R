@@ -218,15 +218,20 @@ create_baseline <- function(region, date, restart_date,
     "30-34", "35-39", "40-44", "45-49", "50-54", "55-59",
     "60-64", "65-69", "70-74", "75-79", "80+"
   )
-  ## Eventually, make this text strings of "default" "ONS 1" "ONS High" "ONS low" etc.
-  ## MAke a dataframe that has all regions and ONS counterfactuals to draw from
+
+  
+  #Check that "population_year" is a valid choice:
+  stopifnot(population_year %in% c(2047, 2042, 2037, 2032, 2027, 2019))
+  
+  #Select baseline population based on input parameters
   if(population_assumptions == "ONS_NHS_region_principal"){
     #Set to the "region" parameter correctly
     population_SET <- readRDS("ONS_population_projections.rds")
     population_SET %>% 
       filter(scenario == "ONS_NHS_region_principal") %>%
       filter(AREA == region) %>%
-      select(-c("AREA", "CODE", "scenario"))-> population_SET
+      filter(year == population_year) %>%
+      select(-c("AREA", "CODE", "scenario", "year"))-> population_SET
     stopifnot(names(population_SET) == expected_age_cols)
     stopifnot(nrow(population_SET) == 1)
     population_SET <- as.integer(round(population_SET))
@@ -236,7 +241,8 @@ create_baseline <- function(region, date, restart_date,
     population_SET %>% 
       filter(scenario == "ONS_NHS_region_low_migration") %>%
       filter(AREA == region) %>%
-      select(-c("AREA", "CODE", "scenario"))-> population_SET
+      filter(year == population_year) %>%
+      select(-c("AREA", "CODE", "scenario", "year"))-> population_SET
     stopifnot(names(population_SET) == expected_age_cols)
     stopifnot(nrow(population_SET) == 1)
     population_SET <- as.integer(round(population_SET))
@@ -246,7 +252,8 @@ create_baseline <- function(region, date, restart_date,
     population_SET %>% 
       filter(scenario == "ONS_NHS_region_high_migration") %>%
       filter(AREA == region) %>%
-      select(-c("AREA", "CODE", "scenario"))-> population_SET
+      filter(year == population_year) %>%
+      select(-c("AREA", "CODE", "scenario", "year"))-> population_SET
     stopifnot(names(population_SET) == expected_age_cols)
     stopifnot(nrow(population_SET) == 1)
     population_SET <- as.integer(round(population_SET))
