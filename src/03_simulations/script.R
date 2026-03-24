@@ -74,34 +74,48 @@ for(i in 1:param_iterations){
     
     mod$update_state(state = initial)
     
-    ## We must now save a snapshot of the full state at the end, 
-    ## so we can later transform it into the next initial state
-    # where_we_left_off <- mod$run(end)[,1]
-    
-    ## Now, define again to "simulate" (keep all times)
-    # mod <- sircovid::lancelot$new(multistage_params[[j]]$pars, ifelse(j==1, 0, (epoch_dates[j-1]/multistage_params[[j]]$pars$dt)-1),
-    #                               1) #, seed = 1L)
-    # mod$update_state(state = initial)
-    
     ## Return "interesting" state indices:
     ## https://mrc-ide.github.io/sircovid/reference/lancelot_index.html
-    index <- c(sircovid::lancelot_index(info)$run,
-               deaths_comm = info$index[["D_comm_tot"]],
-               deaths_hosp = info$index[["D_hosp_tot"]],
-               admitted = info$index[["cum_admit_conf"]],
-               diagnoses = info$index[["cum_new_conf"]],
-               sympt_cases = info$index[["cum_sympt_cases"]],
-               sympt_cases_over25 = info$index[["cum_sympt_cases_over25"]],
-               D_tot = info$index[["D_tot"]],
-               D_inc = info$index[["D_inc"]],
-               ihr = info$index[["ihr"]],
-               hfr = info$index[["hfr"]],
-               ifr = info$index[["ifr"]],
-               #cum_n_vaccinated = info$index[["cum_n_vaccinated"]], #Currently the dimension causes rbind issues, maybe return to this later
-               S = info$index[["S"]], #Needed for Rt calculations
-               prob_strain = info$index[["prob_strain"]], #Needed for Rt calculations
-               R = info$index[["R"]], #Needed for Rt calculations
-               cum_vaccinated = info$index[["cum_n_vaccinated"]])
+    
+    ## Note, only save vaccinations for the first 100 iterations, it's really overkill after that.
+    if(i > 100){
+      index <- c(sircovid::lancelot_index(info)$run,
+                 deaths_comm = info$index[["D_comm_tot"]],
+                 deaths_hosp = info$index[["D_hosp_tot"]],
+                 admitted = info$index[["cum_admit_conf"]],
+                 diagnoses = info$index[["cum_new_conf"]],
+                 sympt_cases = info$index[["cum_sympt_cases"]],
+                 sympt_cases_over25 = info$index[["cum_sympt_cases_over25"]],
+                 D_tot = info$index[["D_tot"]],
+                 D_inc = info$index[["D_inc"]],
+                 ihr = info$index[["ihr"]],
+                 hfr = info$index[["hfr"]],
+                 ifr = info$index[["ifr"]],
+                 #cum_n_vaccinated = info$index[["cum_n_vaccinated"]], #Currently the dimension causes rbind issues, maybe return to this later
+                 S = info$index[["S"]], #Needed for Rt calculations
+                 prob_strain = info$index[["prob_strain"]], #Needed for Rt calculations
+                 R = info$index[["R"]] #Needed for Rt calculations
+                 )
+    }else{
+      index <- c(sircovid::lancelot_index(info)$run,
+                 deaths_comm = info$index[["D_comm_tot"]],
+                 deaths_hosp = info$index[["D_hosp_tot"]],
+                 admitted = info$index[["cum_admit_conf"]],
+                 diagnoses = info$index[["cum_new_conf"]],
+                 sympt_cases = info$index[["cum_sympt_cases"]],
+                 sympt_cases_over25 = info$index[["cum_sympt_cases_over25"]],
+                 D_tot = info$index[["D_tot"]],
+                 D_inc = info$index[["D_inc"]],
+                 ihr = info$index[["ihr"]],
+                 hfr = info$index[["hfr"]],
+                 ifr = info$index[["ifr"]],
+                 #cum_n_vaccinated = info$index[["cum_n_vaccinated"]], #Currently the dimension causes rbind issues, maybe return to this later
+                 S = info$index[["S"]], #Needed for Rt calculations
+                 prob_strain = info$index[["prob_strain"]], #Needed for Rt calculations
+                 R = info$index[["R"]], #Needed for Rt calculations
+                 cum_vaccinated = info$index[["cum_n_vaccinated"]])
+    }
+    
     
     ## Set the "index" vector that is used to return a subset of pars after using run(). 
     ## If this is not used then run() returns all elements in the state vector, which may be excessive and slower than necessary
@@ -161,27 +175,30 @@ for(i in 1:param_iterations){
     index <- index[-c(grep("^S[0-9]+$", names(index)), grep("prob_strain", names(index)), grep("^R[0-9]+$", names(index)))]
     
     ## Also, because vaccine dimensions keep changing, it'll likely be safer to just save them in a separate item.
-    res_vacc <- res_sim[grep("^cum_vaccinated[0-9]+$", names(index)),]
-    if(!is.null(iteration_vaccs)){
-      vacc_dim <- max(nrow(iteration_vaccs), nrow(res_vacc))
-      if(nrow(iteration_vaccs) < vacc_dim){
-        missing_rows <- vacc_dim - nrow(iteration_vaccs)
-        iteration_vaccs <- rbind(iteration_vaccs, matrix(0, nrow = missing_rows, ncol = ncol(iteration_vaccs)))
+    if(i < 101){
+      res_vacc <- res_sim[grep("^cum_vaccinated[0-9]+$", names(index)),]
+      if(!is.null(iteration_vaccs)){
+        vacc_dim <- max(nrow(iteration_vaccs), nrow(res_vacc))
+        if(nrow(iteration_vaccs) < vacc_dim){
+          missing_rows <- vacc_dim - nrow(iteration_vaccs)
+          iteration_vaccs <- rbind(iteration_vaccs, matrix(0, nrow = missing_rows, ncol = ncol(iteration_vaccs)))
+        }
       }
+      iteration_vaccs <- cbind(iteration_vaccs, res_vacc)
+      ## Now remove cum_n_vaccinated from res_sim and index:
+      res_sim <- res_sim[-grep("^cum_vaccinated[0-9]+$", names(index)),]
+      index <- index[-grep("^cum_vaccinated[0-9]+$", names(index))]
+      
     }
-    iteration_vaccs <- cbind(iteration_vaccs, res_vacc)
-    ## Now remove cum_n_vaccinated from res_sim and index:
-    res_sim <- res_sim[-grep("^cum_vaccinated[0-9]+$", names(index)),]
-    index <- index[-grep("^cum_vaccinated[0-9]+$", names(index))]
-    # For now just keep one, but eventually keep multiple
-    #new_hosps <- res_sim[which(names(index) == "deaths_hosp_inc"),]
-    # Change to cbind when keeping multiple
-    #iteration_hosps <- c(iteration_hosps, new_hosps)
+
     iteration_hosps <- cbind(iteration_hosps, res_sim)
     old_info <- info
     }
   final_hosps[[i]] <- iteration_hosps
-  final_vaccs[[i]] <- iteration_vaccs
+  if(i < 101){
+    final_vaccs[[i]] <- iteration_vaccs
+  }
+
 }
 dir.create("outputs")
 saveRDS(final_hosps, "outputs/model_simulations.rds")
