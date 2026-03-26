@@ -193,8 +193,15 @@ for(i in 1:param_iterations){
 
     iteration_hosps <- cbind(iteration_hosps, res_sim)
     old_info <- info
-    }
+  }
+  
+  #Make a total hospitalisations over all ages variable:
+  iteration_hosps <- rbind(
+    iteration_hosps,
+    total_hospitalisations = iteration_hosps["admitted_inc", ] + iteration_hosps["diagnoses_inc", ]
+  )
   final_hosps[[i]] <- iteration_hosps
+  
   if(i < 101){
     final_vaccs[[i]] <- iteration_vaccs
   }
@@ -203,6 +210,7 @@ for(i in 1:param_iterations){
 dir.create("outputs")
 saveRDS(final_hosps, "outputs/model_simulations.rds")
 saveRDS(final_vaccs, "outputs/vaccine_simulations.rds")
+index["total_hospitalisations"] <- 0L
 saveRDS(index, "outputs/index.rds")
 
 england_data <- read_csv("data/england_region_data.csv")
