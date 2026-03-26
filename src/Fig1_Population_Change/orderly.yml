@@ -1,0 +1,60 @@
+script: script.R
+
+parameters:
+  population_assumptions:
+    default: "ONS_NHS_region_principal"
+  population_year:
+    default: 2047
+  
+artefacts:
+  - data:
+      description: dataframe used for plots
+      filenames:
+        - pop_wide.rds
+  - staticgraph:
+      description: supplementary figures
+      filenames:
+        - England_population.png
+        - NHS_pct_change_map.png
+        - Fig1.png
+        - regional_plots/london_population.png
+        - regional_plots/south_east_population.png
+        - regional_plots/south_west_population.png
+        - regional_plots/midlands_population.png
+        - regional_plots/north_east_and_yorkshire_population.png
+        - regional_plots/east_of_england_population.png
+        - regional_plots/north_west_population.png
+        - regional_plots/england_population.png
+        - regional_pct_changes_grid.png
+
+packages:
+  - sircovid
+  - spimalot
+  - tidyr
+  - dplyr
+  - stringr
+  - forcats
+  - magrittr
+  - ggplot2
+  - scales
+  - cowplot
+  - sf
+  - viridis
+  - ggrepel
+  - ggspatial
+  - ggsci
+  - patchwork
+  
+resources:
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.cpg
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.dbf
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.prj
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp.xml
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shx
+
+depends:
+  - 00_population_projections:
+      id: latest
+      use:
+        ONS_population_projections.rds: outputs/ONS_population_projections.rds
