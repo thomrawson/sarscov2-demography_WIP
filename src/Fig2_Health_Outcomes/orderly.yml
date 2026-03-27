@@ -1,0 +1,76 @@
+script: script.R
+
+parameters:
+  deterministic:
+      default: false
+  assumptions:
+    default: "central"
+  population_year:
+    default: 2019
+  vaccine_assumptions:
+    default: "baseline"
+  param_iterations:
+    default: 100
+  
+  
+artefacts:
+  - staticgraph:
+      description: supplementary figures
+      filenames:
+        - Fig2.png
+        - Fig2.pdf
+
+packages:
+  - sircovid
+  - spimalot
+  - tidyr
+  - dplyr
+  - forcats
+  - magrittr
+  - ggplot2
+  - scales
+  - cowplot
+  
+global_resources:
+  global_util.R: rtm_inference/util_new.R
+  
+resources:
+  - plotting_functions.R
+
+depends:
+  - 01_parsed_data:
+      id: latest
+      use:
+        england_region_data.csv: outputs/england_region_data.csv
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/baseline_central.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/baseline_low_migration.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/baseline_high_migration.rds: parameters_base.rds
+  - 04_combine_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/principal_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/principal_index_names.rds: index_names.rds
+  - 04_combine_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/low_migration_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/low_migration_index_names.rds: index_names.rds
+  - 04_combine_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/high_migration_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/high_migration_index_names.rds: index_names.rds
+  - 04_combine_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "rtm_baseline" && parameter:population_year == 2019 && parameter:vaccine_assumptions == "baseline")
+      use:
+        dependencies/baseline_combined_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/baseline_index_names.rds: index_names.rds
