@@ -365,3 +365,154 @@ plot_cumulative_per_capita <- function(sim_df, outcome_label, region_selected, y
     ) +
     scale_x_date(date_labels = "%b %Y")
 }
+
+
+##############
+#The stacked symptomatic cases plot:
+plot_sympt_cases_age_stack <- function(sim_df, region_selected, version_selected = NULL, per_capita = FALSE) {
+  
+  age_levels <- c(
+    "sympt_cases_under15_inc",
+    "sympt_cases_15_24_inc",
+    "sympt_cases_25_49_inc",
+    "sympt_cases_50_64_inc",
+    "sympt_cases_65_79_inc",
+    "sympt_cases_80_plus_inc"
+  )
+  
+  age_labels <- c(
+    "sympt_cases_under15_inc" = "Under 15",
+    "sympt_cases_15_24_inc"   = "15-24",
+    "sympt_cases_25_49_inc"   = "25-49",
+    "sympt_cases_50_64_inc"   = "50-64",
+    "sympt_cases_65_79_inc"   = "65-79",
+    "sympt_cases_80_plus_inc" = "80+"
+  )
+  
+  plot_df <- sim_df |>
+    dplyr::filter(
+      region == region_selected,
+      output_type %in% age_levels
+    ) |>
+    dplyr::mutate(
+      age_group = factor(age_labels[output_type], levels = age_labels[age_levels]),
+      value = if (per_capita) mean / population else mean/1000
+    )
+  
+  if (!is.null(version_selected)) {
+    plot_df <- plot_df |>
+      dplyr::filter(version == version_selected)
+  }
+  
+  ggplot(
+    plot_df,
+    aes(
+      x = sircovid::sircovid_date_as_date(time),
+      y = value,
+      fill = age_group,
+      group = age_group
+    )
+  ) +
+    geom_area() +
+    scale_fill_manual(
+      values = c(
+        "Under 15" = "#1b9e77",
+        "15-24"    = "#d95f02",
+        "25-49"    = "#7570b3",
+        "50-64"    = "#e7298a",
+        "65-79"    = "#66a61e",
+        "80+"      = "#e6ab02"
+      ),
+      breaks = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+"),
+      labels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
+    ) +
+    labs(
+      x = "Time",
+      y = if (per_capita) {
+        "Symptomatic COVID-19 Cases (Per Capita)"
+      } else {
+        "Symptomatic COVID-19 Cases (Thousands)"
+      },
+      fill = "Age Group:",
+      title = if (!is.null(version_selected)) {
+        sprintf("Symptomatic COVID-19 cases by age - %s (%s)", region_selected, version_selected)
+      } else {
+        sprintf("Symptomatic COVID-19 cases by age - %s", region_selected)
+      }
+    ) +
+    theme_classic(base_size = 14) +
+    theme(
+      legend.position = "top",
+      panel.grid.minor = element_blank()
+    ) +
+    scale_x_date(date_labels = "%b %Y")
+}
+
+
+######################
+#Ratio plot
+plot_population_adjusted_case_ratio <- function(sim_df, region_selected) {
+  
+  age_labels <- c(
+    "sympt_cases_under15_inc" = "Under 15",
+    "sympt_cases_15_24_inc"   = "15-24",
+    "sympt_cases_25_49_inc"   = "25-49",
+    "sympt_cases_50_64_inc"   = "50-64",
+    "sympt_cases_65_79_inc"   = "65-79",
+    "sympt_cases_80_plus_inc" = "80+"
+  )
+  
+  plot_df <- sim_df |>
+    dplyr::filter(region == region_selected) |>
+    dplyr::mutate(
+      age_group = factor(
+        age_labels[output_type],
+        levels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
+      ),
+      pop_adjusted_case_ratio = mean_ratio_vs_factual / population_ratio_vs_factual
+    )
+  
+  ggplot(
+    plot_df,
+    aes(
+      x = sircovid::sircovid_date_as_date(time),
+      y = pop_adjusted_case_ratio,
+      colour = age_group,
+      group = age_group
+    )
+  ) +
+    geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
+    geom_line(linewidth = 1) +
+    scale_colour_manual(
+      values = c(
+        "Under 15" = "#1b9e77",
+        "15-24"    = "#d95f02",
+        "25-49"    = "#7570b3",
+        "50-64"    = "#e7298a",
+        "65-79"    = "#66a61e",
+        "80+"      = "#e6ab02"
+      ),
+      breaks = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+"),
+      labels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
+    ) +
+    labs(
+      x = "Time",
+      y = "Cases ratio relative to factual,\nadjusted for population ratio",
+      colour = "Age group:",
+      title = sprintf(
+        "Population-adjusted symptomatic case ratio - %s",
+        region_selected
+      )
+    ) +
+    theme_classic(base_size = 14) +
+    theme(
+      legend.position = "top",
+      panel.grid.minor = element_blank()
+    ) +
+    scale_x_date(date_labels = "%b %Y")
+}
+
+# plot_population_adjusted_case_ratio(
+#   sim_df = p4_sim_data,
+#   region_selected = "england"
+# )

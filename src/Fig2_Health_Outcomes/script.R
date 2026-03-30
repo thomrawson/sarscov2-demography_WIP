@@ -103,6 +103,10 @@ source("plotting_functions.R")
 # Prep folders
 dir.create("Figures")
 dir.create("Figures/individual_panels")
+# Save the data we make plots with
+dir.create("Figure_dataframes")
+saveRDS(simulation_data, "Figure_dataframes/simulation_data.rds")
+saveRDS(england_data, "Figure_dataframes/england_data.rds")
 ####################################################################
 #Plot 1 - confirmed hospital admissions
 p1_sim_data <- simulation_data %>%
@@ -215,7 +219,7 @@ colnames(p4_real_data) <- c("time", "region", "population", "value")
 
 p4 <- plot_time_series(p4_sim_data, p4_real_data,
                        "ICU beds", "england")
-p4 <- p4 + ggtitle("Occuppied ICU beds - England")
+p4 <- p4 + ggtitle("Occupied ICU beds - England")
 ggsave(
   filename = "Figures/individual_panels/Fig2_p4.png",
   plot = p4,

@@ -19,6 +19,11 @@ artefacts:
       filenames:
         - Fig2.png
         - Fig2.pdf
+  - data:
+      description: Already processed data
+      filenames:
+        - Figure_dataframes/simulation_data.rds
+        - Figure_dataframes/england_data.rds
 
 packages:
   - sircovid
