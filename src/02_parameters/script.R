@@ -44,6 +44,6 @@ fs::file_copy("R/transform.R",
               "parameters_transform.R", overwrite = TRUE)
 
 message("Printing supplementary figures")
-png("fig_sup_vacc_age.png", units = "in", width = 6, height = 6, res = 300)
-supl_fig_vac_age()
-dev.off()
+# png("fig_sup_vacc_age.png", units = "in", width = 6, height = 6, res = 300)
+# supl_fig_vac_age()
+# dev.off()
