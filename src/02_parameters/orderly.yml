@@ -21,10 +21,10 @@ artefacts:
         - parameters_prior.csv
         - parameters_proposal.csv
         - parameters_transform.R
-  - staticgraph:
-      description: supplementary figures
-      filenames:
-        - fig_sup_vacc_age.png
+  # - staticgraph:
+  #     description: supplementary figures
+  #     filenames:
+  #       - fig_sup_vacc_age.png
 
 packages:
   - sircovid
