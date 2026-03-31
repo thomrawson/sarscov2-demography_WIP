@@ -1,25 +1,36 @@
 #!/usr/bin/env Rscript
 
-# Get command line arguments
 args <- commandArgs(trailingOnly = TRUE)
 
-# Check inputs
-if (length(args) < 2) {
-  stop("Usage: Rscript run_model.R <population_assumptions> <population_year>")
+# Get SLURM task ID
+task_id <- as.integer(args[1])
+
+pop_assumptions <- c(
+  "ONS_NHS_region_principal",
+  "ONS_NHS_region_low_migration",
+  "ONS_NHS_region_high_migration"
+)
+
+pop_years <- c(2047, 2042, 2037, 2032, 2027)
+
+# Create all combinations
+param_grid <- expand.grid(
+  j = pop_assumptions,
+  k = pop_years,
+  stringsAsFactors = FALSE
+)
+
+# Safety check
+if (task_id > nrow(param_grid)) {
+  stop("Task ID exceeds number of parameter combinations")
 }
 
-# Assign arguments
-j <- args[1]
-k <- args[2]
+# Select this job's parameters
+j <- param_grid$j[task_id]
+k <- param_grid$k[task_id]
 
-# (Optional) convert types if needed
-# Example: if k should be numeric
-k <- as.numeric(k)
+library(orderly1)
 
-# Load required library
-library(orderly1)  # or whichever package provides orderly_run
-
-# Run your function
 orderly_run(
   "02_parameters",
   parameters = list(
