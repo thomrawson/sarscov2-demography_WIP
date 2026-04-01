@@ -416,12 +416,13 @@ plot_sympt_cases_age_stack <- function(sim_df, region_selected, version_selected
     geom_area() +
     scale_fill_manual(
       values = c(
-        "Under 15" = "#1b9e77",
-        "15-24"    = "#d95f02",
-        "25-49"    = "#7570b3",
-        "50-64"    = "#e7298a",
-        "65-79"    = "#66a61e",
-        "80+"      = "#e6ab02"
+        #"#00468BFF" "#ED0000FF" "#42B540FF" "#0099B4FF" "#925E9FFF" "#FDAF91FF" "#AD002AFF" "#ADB6B6FF"
+        "Under 15" = "#00468BFF",#"#1b9e77",
+        "15-24"    = "#ED0000FF",#"#d95f02",
+        "25-49"    = "#42B540FF",#"#7570b3",
+        "50-64"    = "#0099B4FF",#"#e7298a",
+        "65-79"    = "#925E9FFF",#"#66a61e",
+        "80+"      = "#FDAF91FF" #"#e6ab02"
       ),
       breaks = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+"),
       labels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
@@ -485,12 +486,12 @@ plot_population_adjusted_case_ratio <- function(sim_df, region_selected) {
     geom_line(linewidth = 1) +
     scale_colour_manual(
       values = c(
-        "Under 15" = "#1b9e77",
-        "15-24"    = "#d95f02",
-        "25-49"    = "#7570b3",
-        "50-64"    = "#e7298a",
-        "65-79"    = "#66a61e",
-        "80+"      = "#e6ab02"
+        "Under 15" = "#00468BFF",#"#1b9e77",
+        "15-24"    = "#ED0000FF",#"#d95f02",
+        "25-49"    = "#42B540FF",#"#7570b3",
+        "50-64"    = "#0099B4FF",#"#e7298a",
+        "65-79"    = "#925E9FFF",#"#66a61e",
+        "80+"      = "#FDAF91FF" #"#e6ab02"
       ),
       breaks = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+"),
       labels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
