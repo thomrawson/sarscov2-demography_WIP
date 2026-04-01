@@ -1,0 +1,52 @@
+script: script.R
+
+parameters:
+  deterministic:
+      default: false
+  assumptions:
+    default: "central"
+  population_year:
+    default: 2019
+  vaccine_assumptions:
+    default: "baseline"
+  param_iterations:
+    default: 100
+  
+  
+artefacts:
+  - staticgraph:
+      description: supplementary figures
+      filenames:
+        - Fig3.png
+        - Fig3.pdf
+
+packages:
+  - sircovid
+  - spimalot
+  - tidyr
+  - dplyr
+  - forcats
+  - magrittr
+  - ggplot2
+  - scales
+  - cowplot
+  
+global_resources:
+  global_util.R: rtm_inference/util_new.R
+  
+resources:
+  - plotting_functions.R
+
+depends:
+  - 01_parsed_data:
+      id: latest
+      use:
+        england_region_data.csv: outputs/england_region_data.csv
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/baseline_central.rds: parameters_base.rds
+  - Fig2_Health_Outcomes:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        simulation_data.rds: Figure_dataframes/simulation_data.rds
