@@ -20,6 +20,12 @@ param_grid <- expand.grid(
   stringsAsFactors = FALSE
 )
 
+param_grid$v <- "baseline_scaled_up"
+#Add in the baseline
+param_grid <- rbind(param_grid, data.frame(j = "rtm_baseline",
+                                           k = 2019,
+                                           v = "baseline"))
+
 # Safety check
 if (task_id > nrow(param_grid)) {
   stop("Task ID exceeds number of parameter combinations")
@@ -28,12 +34,13 @@ if (task_id > nrow(param_grid)) {
 # Select this job's parameters
 j <- param_grid$j[task_id]
 k <- param_grid$k[task_id]
+v <- param_grid$v[task_id]
 
 library(orderly1)
 
 orderly_run("04_combine_simulations",
             parameters = list(population_assumptions = j,
                               population_year = k,
-                              vaccine_assumptions = "baseline_scaled_up",
+                              vaccine_assumptions = v,
                               param_iterations = 50000),
             use_draft = "newer")
