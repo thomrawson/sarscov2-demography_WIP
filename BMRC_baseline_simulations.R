@@ -30,7 +30,8 @@ orderly_run(
     population_assumptions = "rtm_baseline",
     population_year = 2019,
     vaccine_assumptions = "baseline",
-    param_iterations = 50000
+    #param_iterations = 50000
+    param_iterations = 100
   ),
   use_draft = "newer"
 )
