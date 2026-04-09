@@ -11,7 +11,8 @@ pop_assumptions <- c(
   "ONS_NHS_region_high_migration"
 )
 
-pop_years <- c(2047, 2042, 2037, 2032, 2027)
+#pop_years <- c(2047, 2042, 2037, 2032, 2027)
+pop_years <- c(2047)
 
 regions <- sircovid:::regions("england")
 
