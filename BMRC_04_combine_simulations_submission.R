@@ -43,5 +43,5 @@ orderly_run("04_combine_simulations",
                               population_year = k,
                               vaccine_assumptions = v,
                               #param_iterations = 50000),
-                              param_iterations = 1000),
+                              param_iterations = 100),
             use_draft = "newer")

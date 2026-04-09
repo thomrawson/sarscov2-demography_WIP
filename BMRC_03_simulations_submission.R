@@ -43,7 +43,7 @@ orderly_run(
     population_year = k,
     vaccine_assumptions = "baseline_scaled_up",
     #param_iterations = 50000
-    param_iterations = 1000
+    param_iterations = 100
   ),
   use_draft = "newer"
 )
