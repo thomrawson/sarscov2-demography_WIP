@@ -7,6 +7,8 @@ parameters:
     default: "central"
   population_assumptions:
     default: "ONS_NHS_region_principal"
+  population_year:
+    default: 2019
   vaccine_assumptions:
     default: "baseline"
   param_iterations:
@@ -17,7 +19,7 @@ artefacts:
   - staticgraph:
       description: supplementary figures
       filenames:
-        - england_plots/admitted_inc.png
+        - england_vaccine_strata/vaccines_total.png
 
 packages:
   - sircovid
