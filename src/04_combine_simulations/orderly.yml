@@ -22,6 +22,7 @@ artefacts:
       filenames:
         - combined_output_dataframe.rds
         - index_names.rds
+        - parameters.txt
 
 global_resources:
   global_util.R: rtm_inference/util_new.R
