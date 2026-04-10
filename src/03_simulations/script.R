@@ -317,7 +317,21 @@ ggsave(
   dpi = 320        # high resolution
 )
 
+#Save the contact matrix
+c_mat <- multistage_params[[1]]$pars$m
+saveRDS(c_mat, "contact_matrix.rds")
+#Save the parameters for easier cross-reference
+param_text <- sprintf("Parameters: \n
+                      population_assumptions: %s \n
+                      population_year: %s \n
+                      region: %s \n
+                      vaccine_assumptions: %s \n
+                      param_iterations: %s",
+                      population_assumptions, population_year, region, vaccine_assumptions, param_iterations)
+writeLines(param_text, "parameters.txt")
 
+## Clear cache so we don't re-use transmission matrices in future counterfactuals
+sircovid:::clear_cache()
 
 
 
