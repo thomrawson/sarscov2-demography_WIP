@@ -11,16 +11,20 @@ pop_assumptions <- c(
   "ONS_NHS_region_high_migration"
 )
 
-#pop_years <- c(2047, 2042, 2037, 2032, 2027)
-pop_years <- c(2047)
+pop_years <- c(2047, 2042, 2037, 2032, 2027)
+
+vacc_assumptions <- c("baseline",
+                      "baseline_scaled_up",
+                      "baseline_scaled_up_and_reallocated")
 
 regions <- sircovid:::regions("england")
 
 # Create all combinations
 param_grid <- expand.grid(
-  i = regions,
-  j = pop_assumptions,
-  k = pop_years,
+  r = regions,
+  i = pop_assumptions,
+  j = pop_years,
+  k = vacc_assumptions,
   stringsAsFactors = FALSE
 )
 
@@ -33,18 +37,18 @@ if (task_id > nrow(param_grid)) {
 i <- param_grid$i[task_id]
 j <- param_grid$j[task_id]
 k <- param_grid$k[task_id]
+r <- param_grid$r[task_id]
 
 library(orderly1)
 
 orderly_run(
   "03_simulations",
   parameters = list(
-    region = i,
-    population_assumptions = j,
-    population_year = k,
-    vaccine_assumptions = "baseline_scaled_up",
-    #param_iterations = 50000
-    param_iterations = 100
+    region = r,
+    population_assumptions = i,
+    population_year = j,
+    vaccine_assumptions = k,
+    param_iterations = 50000
   ),
   use_draft = "newer"
 )

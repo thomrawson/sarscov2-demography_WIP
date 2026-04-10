@@ -13,10 +13,15 @@ pop_assumptions <- c(
 
 pop_years <- c(2047, 2042, 2037, 2032, 2027)
 
+vacc_assumptions <- c("baseline",
+                      "baseline_scaled_up",
+                      "baseline_scaled_up_and_reallocated")
+
 # Create all combinations
 param_grid <- expand.grid(
-  j = pop_assumptions,
-  k = pop_years,
+  i = pop_assumptions,
+  j = pop_years,
+  k = vacc_assumptions,
   stringsAsFactors = FALSE
 )
 
@@ -26,6 +31,7 @@ if (task_id > nrow(param_grid)) {
 }
 
 # Select this job's parameters
+i <- param_grid$i[task_id]
 j <- param_grid$j[task_id]
 k <- param_grid$k[task_id]
 
@@ -34,9 +40,9 @@ library(orderly1)
 orderly_run(
   "02_parameters",
   parameters = list(
-    population_assumptions = j,
-    population_year = k,
-    vaccine_assumptions = "baseline_scaled_up"
+    population_assumptions = i,
+    population_year = j,
+    vaccine_assumptions = k
   ),
   use_draft = "newer"
 )

@@ -11,21 +11,24 @@ pop_assumptions <- c(
   "ONS_NHS_region_high_migration"
 )
 
-#pop_years <- c(2047, 2042, 2037, 2032, 2027)
-pop_years <- c(2047)
+pop_years <- c(2047, 2042, 2037, 2032, 2027)
+
+vacc_assumptions <- c("baseline",
+                      "baseline_scaled_up",
+                      "baseline_scaled_up_and_reallocated")
 
 # Create all combinations
 param_grid <- expand.grid(
-  j = pop_assumptions,
-  k = pop_years,
+  i = pop_assumptions,
+  j = pop_years,
+  k = vacc_assumptions,
   stringsAsFactors = FALSE
 )
 
-param_grid$v <- "baseline_scaled_up"
 #Add in the baseline
-param_grid <- rbind(param_grid, data.frame(j = "rtm_baseline",
-                                           k = 2019,
-                                           v = "baseline"))
+param_grid <- rbind(param_grid, data.frame(i = "rtm_baseline",
+                                           j = 2019,
+                                           k = "baseline"))
 
 # Safety check
 if (task_id > nrow(param_grid)) {
@@ -33,16 +36,15 @@ if (task_id > nrow(param_grid)) {
 }
 
 # Select this job's parameters
+i <- param_grid$i[task_id]
 j <- param_grid$j[task_id]
 k <- param_grid$k[task_id]
-v <- param_grid$v[task_id]
 
 library(orderly1)
 
 orderly_run("04_combine_simulations",
-            parameters = list(population_assumptions = j,
-                              population_year = k,
-                              vaccine_assumptions = v,
-                              #param_iterations = 50000),
-                              param_iterations = 100),
+            parameters = list(population_assumptions = i,
+                              population_year = j,
+                              vaccine_assumptions = k,
+                              param_iterations = 50000),
             use_draft = "newer")
