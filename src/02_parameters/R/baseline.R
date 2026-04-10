@@ -575,10 +575,17 @@ create_baseline <- function(region, date, restart_date,
     # And set it
     vaccine_schedule_real$doses <- hold_new_pop
   }else if(vaccine_assumptions == "baseline_scaled_up_and_reallocated"){
+    #This only makes sense if we're not doing rtm_baseline population
+    stopifnot(population_assumptions != "rtm_baseline")
+    # This scenario assumes that we scale all total daily doses by the total population change in that respective region
+    # eg. if there is 8% more total population in a region, then you give 108 doses instead of 100
+    # This is then reallocated according to rollout strategy
+    # Note, this is different to baseline_reallocated, which actually scales up each daily doses by age by the age-specific population change
+    # This is more reasonable as it's a better metric of staffing and GDP
     #First do the "scale up" chunk:
     baseline_pop <- sircovid:::sircovid_population(region)
-    difference_in_pop <- population_SET/baseline_pop
-    hold_new_pop <- round(vaccine_schedule_real$doses*c(difference_in_pop,0,0) #Add the CHW CHR at the end
+    difference_in_pop <- sum(population_SET)/sum(baseline_pop)
+    hold_new_pop <- round(vaccine_schedule_real$doses*difference_in_pop #Add the CHW CHR at the end
     ) 
     # And set it
     vaccine_schedule_real$doses <- hold_new_pop
@@ -596,7 +603,7 @@ create_baseline <- function(region, date, restart_date,
     if(population_assumptions == "rtm_baseline"){
       priority_population <- sircovid::vaccine_priority_population(region = region, 
                                                                    uptake = vaccine_uptake[,1] * vaccine_eligibility)
-    }else if(population_assumptions %in% c("ONS_NHS_region_principal")){
+    }else if(population_assumptions %in% c("ONS_NHS_region_principal", "ONS_NHS_region_low_migration", "ONS_NHS_region_high_migration")){
       priority_population <- 
         round(sircovid::vaccine_priority_proportion(uptake = vaccine_uptake[,1] * vaccine_eligibility) * c(population_SET, 0, 0))
     }else{
