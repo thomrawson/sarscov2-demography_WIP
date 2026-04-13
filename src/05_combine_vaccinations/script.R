@@ -41,7 +41,7 @@ regional_vaccinations <- list(east_of_england = readRDS("regional_vaccinations/e
       sum_mat <- Reduce("+", mats)
       sum_mat
     },
-    seq_len(param_iterations)
+    seq_len(min(param_iterations,100))
   )
 
 
@@ -155,37 +155,37 @@ summarise_iterations <- function(mat_list, index_names, vaccine_names, region_na
 england_dataframe <- summarise_iterations(england_vaccinations, age_names, vaccine_names, 
                                           "england", region_populations$england,
                                           time_vec = time_vector,
-                                          param_iterations = param_iterations)
+                                          param_iterations = min(param_iterations, 100))
 
 total_dataframe <- rbind(england_dataframe,
                          summarise_iterations(regional_vaccinations$east_of_england, age_names, vaccine_names,
                                               "east_of_england", region_populations$east_of_england,
                                               time_vec = time_vector,
-                                              param_iterations = param_iterations),
+                                              param_iterations = min(param_iterations, 100)),
                          summarise_iterations(regional_vaccinations$london, age_names, vaccine_names,
                                               "london", region_populations$london,
                                               time_vec = time_vector,
-                                              param_iterations = param_iterations),
+                                              param_iterations = min(param_iterations, 100)),
                          summarise_iterations(regional_vaccinations$midlands, age_names, vaccine_names,
                                               "midlands", region_populations$midlands,
                                               time_vec = time_vector,
-                                              param_iterations = param_iterations),
+                                              param_iterations = min(param_iterations, 100)),
                          summarise_iterations(regional_vaccinations$north_east_and_yorkshire, age_names, vaccine_names,
                                               "north_east_and_yorkshire", region_populations$north_east_and_yorkshire,
                                               time_vec = time_vector,
-                                              param_iterations = param_iterations),
+                                              param_iterations = min(param_iterations, 100)),
                          summarise_iterations(regional_vaccinations$north_west, age_names, vaccine_names,
                                               "north_west", region_populations$north_west,
                                               time_vec = time_vector,
-                                              param_iterations = param_iterations),
+                                              param_iterations = min(param_iterations, 100)),
                          summarise_iterations(regional_vaccinations$south_east, age_names, vaccine_names,
                                               "south_east", region_populations$south_east,
                                               time_vec = time_vector,
-                                              param_iterations = param_iterations),
+                                              param_iterations = min(param_iterations, 100)),
                          summarise_iterations(regional_vaccinations$south_west, age_names, vaccine_names,
                                               "south_west", region_populations$south_west,
                                               time_vec = time_vector,
-                                              param_iterations = param_iterations)
+                                              param_iterations = min(param_iterations, 100))
                          )
 
 ####################################
