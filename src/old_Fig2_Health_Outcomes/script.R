@@ -3,31 +3,31 @@ source("global_util.R")
 ## Load simulation data
 ########################
 #Base params
-base_params_2047 <- readRDS("dependencies/baseline_2047.rds")
-base_params_2047$england <- list(
-  population = Reduce(`+`, lapply(base_params_2047, `[[`, "population"))
+principal_base_params <- readRDS("dependencies/baseline_central.rds")
+principal_base_params$england <- list(
+  population = Reduce(`+`, lapply(principal_base_params, `[[`, "population"))
 )
-base_params_2037 <- readRDS("dependencies/baseline_2037.rds")
-base_params_2037$england <- list(
-  population = Reduce(`+`, lapply(base_params_2037, `[[`, "population"))
+low_migration_base_params <- readRDS("dependencies/baseline_low_migration.rds")
+low_migration_base_params$england <- list(
+  population = Reduce(`+`, lapply(low_migration_base_params, `[[`, "population"))
 )
-base_params_2027 <- readRDS("dependencies/baseline_2027.rds")
-base_params_2027$england <- list(
-  population = Reduce(`+`, lapply(base_params_2027, `[[`, "population"))
+high_migration_base_params <- readRDS("dependencies/baseline_high_migration.rds")
+high_migration_base_params$england <- list(
+  population = Reduce(`+`, lapply(high_migration_base_params, `[[`, "population"))
 )
 
 # Simulation output and index names
 baseline_df <- readRDS("dependencies/baseline_combined_output_dataframe.rds")
 baseline_index_names <- readRDS("dependencies/baseline_index_names.rds")
-counterfactual_2047_df <- readRDS("dependencies/2047_output_dataframe.rds")
-counterfactual_2047_index_names <- readRDS("dependencies/2047_index_names.rds")
-counterfactual_2037_df <- readRDS("dependencies/2037_output_dataframe.rds")
-counterfactual_2037_index_names <- readRDS("dependencies/2037_index_names.rds")
-counterfactual_2027_df <- readRDS("dependencies/2027_output_dataframe.rds")
-counterfactual_2027_index_names <- readRDS("dependencies/2027_index_names.rds")
+counterfactual_principal_df <- readRDS("dependencies/principal_output_dataframe.rds")
+counterfactual_principal_index_names <- readRDS("dependencies/principal_index_names.rds")
+counterfactual_low_migration_df <- readRDS("dependencies/low_migration_output_dataframe.rds")
+counterfactual_low_migration_index_names <- readRDS("dependencies/low_migration_index_names.rds")
+counterfactual_high_migration_df <- readRDS("dependencies/high_migration_output_dataframe.rds")
+counterfactual_high_migration_index_names <- readRDS("dependencies/high_migration_index_names.rds")
 
 #Check all the index names align
-if (!(identical(baseline_index_names, counterfactual_2047_index_names) && identical(baseline_index_names, counterfactual_2037_index_names) && identical(baseline_index_names, counterfactual_2027_index_names))) {
+if (!(identical(baseline_index_names, counterfactual_principal_index_names) && identical(baseline_index_names, counterfactual_low_migration_index_names) && identical(baseline_index_names, counterfactual_high_migration_index_names))) {
   stop("Index names are not identical")
 }
 
@@ -38,27 +38,27 @@ baseline_df <- baseline_df %>%
   mutate(population = sum(sircovid:::sircovid_population(region))) %>%
   ungroup()
 
-counterfactual_2047_df$version <- "Counterfactual_2047"
-counterfactual_2047_df <- counterfactual_2047_df %>%
+counterfactual_principal_df$version <- "Counterfactual_principal"
+counterfactual_principal_df <- counterfactual_principal_df %>%
   rowwise() %>%
-  mutate(population = sum(base_params_2047[[region]]$population)) %>%
+  mutate(population = sum(principal_base_params[[region]]$population)) %>%
   ungroup()
 
-counterfactual_2037_df$version <- "Counterfactual_2037"
-counterfactual_2037_df <- counterfactual_2037_df %>%
+counterfactual_low_migration_df$version <- "Counterfactual_low_migration"
+counterfactual_low_migration_df <- counterfactual_low_migration_df %>%
   rowwise() %>%
-  mutate(population = sum(base_params_2037[[region]]$population)) %>%
+  mutate(population = sum(low_migration_base_params[[region]]$population)) %>%
   ungroup()
 
-counterfactual_2027_df$version <- "Counterfactual_2027"
-counterfactual_2027_df <- counterfactual_2027_df %>%
+counterfactual_high_migration_df$version <- "Counterfactual_high_migration"
+counterfactual_high_migration_df <- counterfactual_high_migration_df %>%
   rowwise() %>%
-  mutate(population = sum(base_params_2027[[region]]$population)) %>%
+  mutate(population = sum(high_migration_base_params[[region]]$population)) %>%
   ungroup()
 
 # Stick all simulation data together:
-simulation_data <- rbind(baseline_df, counterfactual_2047_df, 
-                         counterfactual_2037_df, counterfactual_2027_df)
+simulation_data <- rbind(baseline_df, counterfactual_principal_df, 
+                         counterfactual_low_migration_df, counterfactual_high_migration_df)
 
 
 # Load the real-world data
@@ -88,11 +88,11 @@ england_data <- england_data %>%
                               na.rm = TRUE))
 
 #Remove all the stuff we don't need anymore:
-rm(baseline_df, counterfactual_2047_df,
-   counterfactual_2037_df, counterfactual_2027_df,
+rm(baseline_df, counterfactual_principal_df,
+   counterfactual_high_migration_df, counterfactual_low_migration_df,
    england_totals,
-   base_params_2047, base_params_2037, base_params_2027,
-   counterfactual_2047_index_names, counterfactual_2037_index_names, counterfactual_2027_index_names)
+   principal_base_params, high_migration_base_params, low_migration_base_params,
+   counterfactual_principal_index_names, counterfactual_low_migration_index_names, counterfactual_high_migration_index_names)
 
 #########################################################################
 #Define general plotting functions
@@ -111,7 +111,7 @@ saveRDS(england_data, "Figure_dataframes/england_data.rds")
 #Plot 1 - confirmed hospital admissions
 p1_sim_data <- simulation_data %>%
   filter(output_type == "total_hospitalisations") %>%
-  filter(version %in% c("Factual", "Counterfactual_2047"))
+  filter(version %in% c("Factual", "Counterfactual_principal"))
 p1_real_data <- england_data %>%
   select(date, region, population, total_confirmed_admissions)
 colnames(p1_real_data) <- c("time", "region", "population", "value")
@@ -185,7 +185,7 @@ ggsave(
 
 p3_sim_data <- simulation_data %>%
   filter(output_type == "deaths_hosp_inc") %>%
-  filter(version %in% c("Factual", "Counterfactual_2047"))
+  filter(version %in% c("Factual", "Counterfactual_principal"))
 p3_real_data <- england_data %>%
   select(date, region, population, ons_death_hospital)
 colnames(p3_real_data) <- c("time", "region", "population", "value")
@@ -212,7 +212,7 @@ ggsave(
 # Panel 4 ICU beds
 p4_sim_data <- simulation_data %>%
   filter(output_type == "icu") %>%
-  filter(version %in% c("Factual", "Counterfactual_2047"))
+  filter(version %in% c("Factual", "Counterfactual_principal"))
 p4_real_data <- england_data %>%
   select(date, region, population, phe_occupied_mv_beds) #mech_vent_covid) #phe_occupied_mv_beds 
 colnames(p4_real_data) <- c("time", "region", "population", "value")
@@ -259,7 +259,7 @@ ggsave(
 # Panel 6 - IHR
 p6_sim_data <- simulation_data %>%
   filter(output_type == "ihr") %>%
-  filter(version %in% c("Factual", "Counterfactual_2047"))
+  filter(version %in% c("Factual", "Counterfactual_principal"))
 p6_real_data <- data.frame(time = NA, region = NA, population = NA, value = NA)
 
 p6 <- plot_time_series(p6_sim_data, p6_real_data,
@@ -275,7 +275,7 @@ ggsave(
 # Panel 7 - IFR
 p7_sim_data <- simulation_data %>%
   filter(output_type == "ifr") %>%
-  filter(version %in% c("Factual", "Counterfactual_2047"))
+  filter(version %in% c("Factual", "Counterfactual_principal"))
 p7_real_data <- data.frame(time = NA, region = NA, population = NA, value = NA)
 
 p7 <- plot_time_series(p7_sim_data, p7_real_data,
