@@ -553,9 +553,7 @@ plot_sympt_cases_age_proportion <- function(sim_df, region_selected, version_sel
 plot_population_adjusted_case_ratio <- function(sim_df, region_selected) {
   
   age_labels <- c(
-    "sympt_cases_under15_inc" = "Under 15",
-    "sympt_cases_15_24_inc"   = "15-24",
-    "sympt_cases_25_49_inc"   = "25-49",
+    "sympt_cases_0_49_inc"   = "0-49",
     "sympt_cases_50_64_inc"   = "50-64",
     "sympt_cases_65_79_inc"   = "65-79",
     "sympt_cases_80_plus_inc" = "80+"
@@ -566,7 +564,7 @@ plot_population_adjusted_case_ratio <- function(sim_df, region_selected) {
     dplyr::mutate(
       age_group = factor(
         age_labels[output_type],
-        levels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
+        levels = c("0-49", "50-64", "65-79", "80+")
       ),
       pop_adjusted_case_ratio = mean_ratio_vs_factual / population_ratio_vs_factual
     )
@@ -584,15 +582,15 @@ plot_population_adjusted_case_ratio <- function(sim_df, region_selected) {
     geom_line(linewidth = 1) +
     scale_colour_manual(
       values = c(
-        "Under 15" = "#00468BFF",#"#1b9e77",
-        "15-24"    = "#ED0000FF",#"#d95f02",
-        "25-49"    = "#42B540FF",#"#7570b3",
-        "50-64"    = "#0099B4FF",#"#e7298a",
-        "65-79"    = "#925E9FFF",#"#66a61e",
-        "80+"      = "#FDAF91FF" #"#e6ab02"
+        "0-49" = "#00468BFF",#"#1b9e77",
+        "50-64"    = "#ED0000FF",#"#d95f02",
+        "65-79"    = "#42B540FF",#"#7570b3",
+        #"50-64"    = "#0099B4FF",#"#e7298a",
+        "80+"    = "#925E9FFF"#"#66a61e",
+        #"80+"      = "#FDAF91FF" #"#e6ab02"
       ),
-      breaks = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+"),
-      labels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
+      breaks = c("0-49", "50-64", "65-79", "80+"),
+      labels = c("0-49", "50-64", "65-79", "80+")
     ) +
     labs(
       x = "Time",
@@ -616,9 +614,7 @@ plot_population_adjusted_case_ratio <- function(sim_df, region_selected) {
 plot_population_adjusted_cumulative_case_ratio <- function(sim_df, region_selected) {
   
   age_labels <- c(
-    "sympt_cases_under15_inc" = "Under 15",
-    "sympt_cases_15_24_inc"   = "15-24",
-    "sympt_cases_25_49_inc"   = "25-49",
+    "sympt_cases_0_49_inc"   = "0-49",
     "sympt_cases_50_64_inc"   = "50-64",
     "sympt_cases_65_79_inc"   = "65-79",
     "sympt_cases_80_plus_inc" = "80+"
@@ -629,7 +625,7 @@ plot_population_adjusted_cumulative_case_ratio <- function(sim_df, region_select
     dplyr::mutate(
       age_group = factor(
         age_labels[output_type],
-        levels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
+        levels = c("0-49", "50-64", "65-79", "80+")
       )
     )
   
@@ -646,15 +642,15 @@ plot_population_adjusted_cumulative_case_ratio <- function(sim_df, region_select
     geom_line(linewidth = 1) +
     scale_colour_manual(
       values = c(
-        "Under 15" = "#00468BFF",
-        "15-24"    = "#ED0000FF",
-        "25-49"    = "#42B540FF",
-        "50-64"    = "#0099B4FF",
-        "65-79"    = "#925E9FFF",
-        "80+"      = "#FDAF91FF"
+        "0-49" = "#00468BFF",#"#1b9e77",
+        "50-64"    = "#ED0000FF",#"#d95f02",
+        "65-79"    = "#42B540FF",#"#7570b3",
+        #"50-64"    = "#0099B4FF",#"#e7298a",
+        "80+"    = "#925E9FFF"#"#66a61e",
+        #"80+"      = "#FDAF91FF" #"#e6ab02"
       ),
-      breaks = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+"),
-      labels = c("Under 15", "15-24", "25-49", "50-64", "65-79", "80+")
+      breaks = c("0-49", "50-64", "65-79", "80+"),
+      labels = c("0-49", "50-64", "65-79", "80+")
     ) +
     labs(
       x = "Time",
@@ -662,6 +658,207 @@ plot_population_adjusted_cumulative_case_ratio <- function(sim_df, region_select
       colour = "Age group:",
       title = sprintf(
         "Population-adjusted cumulative symptomatic case ratio - %s",
+        region_selected
+      )
+    ) +
+    theme_classic(base_size = 14) +
+    theme(
+      legend.position = "top",
+      panel.grid.minor = element_blank()
+    ) +
+    scale_x_date(date_labels = "%b %Y")
+}
+########################################
+#Rolling cumulative version of the above:
+plot_population_adjusted_rolling_cumulative_case_ratio <- function(sim_df, region_selected) {
+  
+  age_labels <- c(
+    #"sympt_cases_under15_inc" = "Under 15",
+    #"sympt_cases_15_24_inc"   = "15-24",
+    "sympt_cases_0_49_inc"   = "0-49",
+    "sympt_cases_50_64_inc"   = "50-64",
+    "sympt_cases_65_79_inc"   = "65-79",
+    "sympt_cases_80_plus_inc" = "80+"
+  )
+  
+  plot_df <- sim_df |>
+    dplyr::filter(region == region_selected) |>
+    dplyr::mutate(
+      age_group = factor(
+        age_labels[output_type],
+        levels = c("0-49", "50-64", "65-79", "80+")
+      )
+    )
+  
+  ggplot(
+    plot_df,
+    aes(
+      x = sircovid::sircovid_date_as_date(time),
+      y = roll_pop_adjusted_case_ratio,
+      colour = age_group,
+      group = age_group
+    )
+  ) +
+    geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
+    geom_line(linewidth = 1) +
+    scale_colour_manual(
+      values = c(
+        "0-49" = "#00468BFF",#"#1b9e77",
+        "50-64"    = "#ED0000FF",#"#d95f02",
+        "65-79"    = "#42B540FF",#"#7570b3",
+        #"50-64"    = "#0099B4FF",#"#e7298a",
+        "80+"    = "#925E9FFF"#"#66a61e",
+        #"80+"      = "#FDAF91FF" #"#e6ab02"
+      ),
+      breaks = c("0-49", "50-64", "65-79", "80+"),
+      labels = c("0-49", "50-64", "65-79", "80+")
+    ) +
+    labs(
+      x = "Time",
+      y = "Ratio of difference in rolling cumulative \ncases to difference in population size",
+      colour = "Age group:",
+      title = sprintf(
+        "Population-adjusted 3-month rolling cumulative symptomatic case ratio - %s",
+        region_selected
+      )
+    ) +
+    theme_classic(base_size = 14) +
+    theme(
+      legend.position = "top",
+      panel.grid.minor = element_blank()
+    ) +
+    scale_x_date(date_labels = "%b %Y")
+}
+
+########################################
+#Rolling cumulative version for hospitalisations:
+plot_population_adjusted_rolling_cumulative_case_ratio_hosps <- function(sim_df, region_selected) {
+
+  age_labels <- c(
+    "all_admission_0_9_inc" = "0-9",
+    "all_admission_10_19_inc"   = "10-19",
+    "all_admission_20_29_inc"   = "20-29",
+    "all_admission_30_39_inc"   = "30-39",
+    "all_admission_40_49_inc"   = "40-49",
+    "all_admission_50_59_inc"   = "50-59",
+    "all_admission_60_69_inc"   = "60-69",
+    "all_admission_70_79_inc"   = "70-79",
+    "all_admission_80_plus_inc" = "80+"
+  )
+  
+  plot_df <- sim_df |>
+    dplyr::filter(region == region_selected) |>
+    dplyr::mutate(
+      age_group = factor(
+        age_labels[output_type],
+        levels = c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80+")
+      )
+    )
+  
+  ggplot(
+    plot_df,
+    aes(
+      x = sircovid::sircovid_date_as_date(time),
+      y = roll_pop_adjusted_case_ratio,
+      colour = age_group,
+      group = age_group
+    )
+  ) +
+    geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
+    geom_line(linewidth = 1) +
+    scale_colour_manual(
+      values = c(
+        "0-9" = "#00468BFF",
+        "10-19"    = "#ED0000FF",
+        "20-29"    = "#42B540FF",
+        "30-39"    = "#0099B4FF",
+        "40-49"    = "#925E9FFF",
+        "50-59"    = "#FDAF91FF",
+        "60-69"    = "yellow",
+        "70-79"    = "hotpink",
+        "80+"    = "black"
+      ),
+      breaks = c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80+"),
+      labels = c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80+")
+    ) +
+    labs(
+      x = "Time",
+      y = "Ratio of difference in rolling cumulative \nhospitalisations to difference in population size",
+      colour = "Age group:",
+      title = sprintf(
+        "Population-adjusted 3-month rolling cumulative hospitalisation ratio - %s",
+        region_selected
+      )
+    ) +
+    theme_classic(base_size = 14) +
+    theme(
+      legend.position = "top",
+      panel.grid.minor = element_blank()
+    ) +
+    scale_x_date(date_labels = "%b %Y")
+}
+
+########################################
+#Rolling cumulative version for deaths:
+plot_population_adjusted_rolling_cumulative_case_ratio_deaths <- function(sim_df, region_selected) {
+  
+  age_labels <- c(
+    "deaths_hosp_0_49_inc"    = "0-49",
+    "deaths_hosp_50_64_inc"   = "50-64",
+    #"deaths_hosp_55_59_inc"   = "55-59",
+    #"deaths_hosp_60_64_inc"   = "60-64",
+    "deaths_hosp_65_79_inc"   = "65-79",
+    #"deaths_hosp_70_74_inc"   = "70-74",
+    #"deaths_hosp_75_79_inc"   = "75-79",
+    "deaths_hosp_80_plus_inc" = "80+"
+  )
+  
+  plot_df <- sim_df |>
+    dplyr::filter(region == region_selected) |>
+    dplyr::mutate(
+      age_group = factor(
+        age_labels[output_type],
+        levels = c("0-49", "50-64", "65-79", "80+")
+      )
+    )
+  
+  ggplot(
+    plot_df,
+    aes(
+      x = sircovid::sircovid_date_as_date(time),
+      y = roll_pop_adjusted_case_ratio,
+      colour = age_group,
+      group = age_group
+    )
+  ) +
+    geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
+    geom_line(linewidth = 1) +
+    scale_colour_manual(
+      values = c(
+        # "0-49" = "#00468BFF",
+        # "50-54"    = "#ED0000FF",
+        # "55-59"    = "#42B540FF",
+        # "60-64"    = "#0099B4FF",
+        # "65-69"    = "#925E9FFF",
+        # "70-74"    = "#FDAF91FF",
+        # "75-79"    = "yellow",
+        # "80+"    = "black"
+        "0-49" = "#00468BFF",#"#1b9e77",
+        "50-64"    = "#ED0000FF",#"#d95f02",
+        "65-79"    = "#42B540FF",#"#7570b3",
+        #"50-64"    = "#0099B4FF",#"#e7298a",
+        "80+"    = "#925E9FFF"#"#66a61e",
+        #"80+"      = "#FDAF91FF" #"#e6ab02"
+      ),
+      breaks = c("0-49", "50-64", "65-79", "80+"),
+      labels = c("0-49", "50-64", "65-79", "80+")
+    ) +
+    labs(
+      x = "Time",
+      y = "Ratio of difference in rolling cumulative \ndeaths to difference in population size",
+      colour = "Age group:",
+      title = sprintf(
+        "Population-adjusted 3-month rolling cumulative hospitalisation ratio - %s",
         region_selected
       )
     ) +

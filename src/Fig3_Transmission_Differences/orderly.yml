@@ -30,6 +30,8 @@ packages:
   - ggplot2
   - scales
   - cowplot
+  - slider
+  - lubridate
   
 global_resources:
   global_util.R: rtm_inference/util_new.R
@@ -46,7 +48,29 @@ depends:
       id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
       use:
         dependencies/baseline_central.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/baseline_low_migration.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        dependencies/baseline_high_migration.rds: parameters_base.rds
   - Fig2_Health_Outcomes:
       id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
       use:
         simulation_data.rds: Figure_dataframes/simulation_data.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        vaccine_dependencies/base.rds: parameters_base.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        vaccine_dependencies/vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        vaccine_dependencies/vaccine_schedules.rds: vaccine_schedules.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "rtm_baseline" && parameter:population_year == 2019 && parameter:vaccine_assumptions == "baseline")
+      use:
+        vaccine_dependencies/baseline_vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        vaccine_dependencies/baseline_vaccine_schedules.rds: vaccine_schedules.rds
