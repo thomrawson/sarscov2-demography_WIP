@@ -1,10 +1,18 @@
 script: script.R
 
 parameters:
+  deterministic:
+      default: false
+  assumptions:
+    default: "central"
   population_assumptions:
     default: "ONS_NHS_region_principal"
   population_year:
-    default: 2047
+    default: 2019
+  vaccine_assumptions:
+    default: "baseline"
+  param_iterations:
+    default: 100
   
 artefacts:
   - data:
@@ -17,6 +25,7 @@ artefacts:
         - England_population.png
         - NHS_pct_change_map.png
         - Fig1.png
+        - Fig1_w_vaccs.png
         - regional_plots/london_population.png
         - regional_plots/south_east_population.png
         - regional_plots/south_west_population.png
@@ -32,6 +41,7 @@ packages:
   - spimalot
   - tidyr
   - dplyr
+  - lubridate
   - stringr
   - forcats
   - magrittr
@@ -58,3 +68,17 @@ depends:
       id: latest
       use:
         ONS_population_projections.rds: outputs/ONS_population_projections.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        vaccine_dependencies/base.rds: parameters_base.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      use:
+        vaccine_dependencies/vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        vaccine_dependencies/vaccine_schedules.rds: vaccine_schedules.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "rtm_baseline" && parameter:population_year == 2019 && parameter:vaccine_assumptions == "baseline")
+      use:
+        vaccine_dependencies/baseline_vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        vaccine_dependencies/baseline_vaccine_schedules.rds: vaccine_schedules.rds
