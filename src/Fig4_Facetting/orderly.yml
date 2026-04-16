@@ -19,7 +19,7 @@ artefacts:
       description: Already processed data
       filenames:
         - Figure_dataframes/figure_data.rds
-        - Figure_dataframe/simulation_data.rds
+        - Figure_dataframes/simulation_data.rds
 
 packages:
   - sircovid

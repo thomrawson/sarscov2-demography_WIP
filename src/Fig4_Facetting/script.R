@@ -510,7 +510,7 @@ saveRDS(simulation_data, "Figure_dataframes/simulation_data.rds")
 #Cumulative hospitalisations by scenario
 figure_data <- simulation_data %>%
   filter(output_type == "total_hospitalisations")
-
+saveRDS(simulation_data, "Figure_dataframes/figure_data.rds")
 
 f4 <- plot_cumulative_facet(figure_data, "Hospitalisations \n(thousands)", "england", -150)
 f4 <- f4 + ggtitle("Cumulative Daily Confirmed Hospitalisations by Vaccination and Migration Assumptions")

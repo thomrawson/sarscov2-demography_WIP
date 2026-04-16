@@ -68,7 +68,7 @@ plot_cumulative_facet <- function(sim_df, outcome_label, region_selected, y_nudg
       show.legend = FALSE,
       hjust = -0.1,
       nudge_y = y_nudge_value,
-      nudge_x = -90
+      nudge_x = -100
     ) +
     #geom_line(linewidth = 1) +
     scale_colour_manual(values = c("2019" = "#1b9e77",
