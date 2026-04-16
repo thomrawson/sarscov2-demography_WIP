@@ -425,7 +425,7 @@ print(grid_plot)
  #final_patch <- p_england | p_map + plot_layout(widths = c(5, 2))
  
  ggsave("Fig1.png", final, width = 16, height = 8, dpi = 300)
- 
+ ggsave("Fig1.pdf", final, width = 16, height = 8, dpi = 300)
  ######################################################################################
  # Add the optional vaccination plot
  
