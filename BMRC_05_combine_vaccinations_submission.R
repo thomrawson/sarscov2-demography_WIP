@@ -46,6 +46,6 @@ orderly_run("05_combine_vaccinations",
             parameters = list(population_assumptions = i,
                               population_year = j,
                               vaccine_assumptions = k,
-                              #param_iterations = 50000),
-                              param_iterations = 200),
+                              param_iterations = 50000),
+                              #param_iterations = 200),
             use_draft = "newer")
