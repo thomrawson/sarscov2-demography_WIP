@@ -1,0 +1,7 @@
+v1 = "baseline"
+v2 = "baseline_scaled_up"
+v3 = "baseline_scaled_up_and_reallocated"
+
+p1 = "ONS_NHS_region_principal"
+p2 = "ONS_NHS_region_low_migration"
+p3 = "ONS_NHS_region_high_migration"
