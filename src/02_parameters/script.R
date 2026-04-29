@@ -14,6 +14,10 @@ date <- "2022-02-24"
 ## * mid September 2021: booster programme starts, expand vaccine classes
 ## * early November 2021: omicron appears, rotate strains
 epoch_dates <- c("2020-09-17", "2020-12-07", "2021-03-08", "2021-09-14", "2021-11-01")
+if(vaccine_assumptions == "1_month_earlier"){
+  #Start vaccines 198 days earlier for 100 day mission scenario. Keep boosters the same.
+  epoch_dates <- c("2020-09-17", "2020-11-07", "2021-03-08", "2021-09-14", "2021-11-01")
+}
 
 ## Load all parameters from the last run; creates priors, and updates
 ## new entries into the proposal matrix as needed.
