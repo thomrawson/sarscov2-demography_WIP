@@ -13,9 +13,11 @@ pop_assumptions <- c(
 
 pop_years <- c(2047, 2042, 2037, 2032, 2027)
 
-vacc_assumptions <- c("baseline",
-                      "baseline_scaled_up",
-                      "baseline_scaled_up_and_reallocated")
+# vacc_assumptions <- c("baseline",
+#                       "baseline_scaled_up",
+#                       "baseline_scaled_up_and_reallocated")
+
+vacc_assumptions <- "1_month_earlier"
 
 # Create all combinations
 param_grid <- expand.grid(
