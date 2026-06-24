@@ -1,0 +1,60 @@
+script: script.R
+
+parameters:
+  deterministic:
+      default: false
+  assumptions:
+    default: "central"
+  population_assumptions:
+    default: "ONS_NHS_region_principal"
+  param_iterations:
+    default: 100
+  
+  
+artefacts:
+  - staticgraph:
+      description: supplementary figures
+      filenames:
+        - fig_b_deficit_heatmap.png
+        - fig_a_doses_per_capita.png
+
+packages:
+  - sircovid
+  - spimalot
+  - tidyr
+  - dplyr
+  - forcats
+  - magrittr
+  - ggplot2
+  - scales
+  - lubridate
+  - cowplot
+  
+global_resources:
+  global_util.R: rtm_inference/util_new.R
+
+depends:
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline")
+      use:
+        central_base.rds: parameters_base.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline")
+      use:
+        pessimistic_vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        pessimistic_vaccine_schedules.rds: vaccine_schedules.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline_scaled_up_and_reallocated")
+      use:
+        central_vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        central_vaccine_schedules.rds: vaccine_schedules.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == population_assumptions && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline_scaled_up")
+      use:
+        optimistic_vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        optimistic_vaccine_schedules.rds: vaccine_schedules.rds
+  - 05_combine_vaccinations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "rtm_baseline" && parameter:population_year == 2019 && parameter:vaccine_assumptions == "baseline")
+      use:
+        baseline_vaccine_simulations.rds: combined_vaccination_dataframe.rds
+        baseline_vaccine_schedules.rds: vaccine_schedules.rds
