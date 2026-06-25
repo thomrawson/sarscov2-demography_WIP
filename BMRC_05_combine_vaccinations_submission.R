@@ -11,13 +11,15 @@ pop_assumptions <- c(
   "ONS_NHS_region_high_migration"
 )
 
-pop_years <- c(2047, 2042, 2037, 2032, 2027)
+pop_years <- c(2047, 
+               #2042, 
+               2037, #2032, 
+               2027)
 
-# vacc_assumptions <- c("baseline",
-#                       "baseline_scaled_up",
-#                       "baseline_scaled_up_and_reallocated")
-
-vacc_assumptions <- "1_month_earlier"
+vacc_assumptions <- c("baseline",
+                      "baseline_scaled_up",
+                      "baseline_scaled_up_and_reallocated",
+                      "vaccinate_young_earlier")
 
 # Create all combinations
 param_grid <- expand.grid(
