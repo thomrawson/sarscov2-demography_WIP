@@ -94,7 +94,11 @@ for(i in 1:param_iterations){
                  #cum_n_vaccinated = info$index[["cum_n_vaccinated"]], #Currently the dimension causes rbind issues, maybe return to this later
                  S = info$index[["S"]], #Needed for Rt calculations
                  prob_strain = info$index[["prob_strain"]], #Needed for Rt calculations
-                 R = info$index[["R"]] #Needed for Rt calculations
+                 R = info$index[["R"]], #Needed for Rt calculations
+                 # Extract prop_protected
+                 protected_S_vaccinated = info$index[["protected_S_vaccinated"]],
+                 protected_R_vaccinated = info$index[["protected_R_vaccinated"]],
+                 protected_R_unvaccinated = info$index[["protected_R_unvaccinated"]]
                  )
     }else{
       index <- c(sircovid::lancelot_index(info)$run,
@@ -113,6 +117,11 @@ for(i in 1:param_iterations){
                  S = info$index[["S"]], #Needed for Rt calculations
                  prob_strain = info$index[["prob_strain"]], #Needed for Rt calculations
                  R = info$index[["R"]], #Needed for Rt calculations
+                 # Extract prop_protected
+                 protected_S_vaccinated = info$index[["protected_S_vaccinated"]],
+                 protected_R_vaccinated = info$index[["protected_R_vaccinated"]],
+                 protected_R_unvaccinated = info$index[["protected_R_unvaccinated"]],
+                 #The additional vaccinated
                  cum_vaccinated = info$index[["cum_n_vaccinated"]])
     }
     
@@ -191,6 +200,34 @@ for(i in 1:param_iterations){
       
     }
 
+    ## if j = 1, then protected_* categories are only dim 1, but for all other j it will be 2, so we need to inflate in the extra rows
+    if(j == 1){
+      targets <- c(
+        "protected_S_vaccinated",
+        "protected_R_vaccinated",
+        "protected_R_unvaccinated"
+      )
+      
+      for (target in rev(targets)) {  # reverse order so row indices don't shift
+        target_index <- which(rownames(res_sim) == target)
+        
+        # Rename original row
+        rownames(res_sim)[target_index] <- paste0(target, "1")
+        
+        # Create new zero row
+        new_row <- matrix(0, nrow = 1, ncol = ncol(res_sim))
+        colnames(new_row) <- colnames(res_sim)
+        rownames(new_row) <- paste0(target, "2")
+        
+        # Insert immediately below original row
+        res_sim <- rbind(
+          res_sim[1:target_index, , drop = FALSE],
+          new_row,
+          res_sim[(target_index + 1):nrow(res_sim), , drop = FALSE]
+        )
+      }
+    }
+    
     iteration_hosps <- cbind(iteration_hosps, res_sim)
     old_info <- info
   }
