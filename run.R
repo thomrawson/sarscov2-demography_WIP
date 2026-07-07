@@ -22,6 +22,7 @@ orderly_run("02_parameters",
                                                                                   #"baseline_scaled_up" to keep the distribution but just scale it to match population change
                                                                                   #"baseline_scaled_up_and_reallocated" to scale the total daily vaccines given by the region's population difference, and then re-allocate
                                                                                   #"vaccinate_young_earlier" to swap around when vaccines are opened up to 50-54s with 25-29s. 55-59s with 30-34s. 60-64s with 35-39s.
+                                                                                  #"no_vaccines" for 0 vaccine doses
                                                                                   #"1_month_earlier" is same as baseline_scaled_up_and_reallocated but doses 1 and 2 are shifted forward 30 days
             use_draft = "newer")  
 

@@ -537,7 +537,13 @@ create_baseline <- function(region, date, restart_date,
   ## Here we alter the vaccine schedule for certain sensitivity assumptions:
   if( vaccine_assumptions == "baseline"){
     
-  }else if(vaccine_assumptions == "reallocate_same_number"){
+  }else if(vaccine_assumptions == "no_vaccines"){
+    vaccine_schedule_real$doses <- array(
+      0,
+      dim = dim(vaccine_schedule_real$doses)
+    )
+    
+  } else if(vaccine_assumptions == "reallocate_same_number"){
     #Sum over all ages
     daily_doses_value <- colSums(vaccine_schedule_real$doses, dims = 1L)
     #Extract booster doses:
