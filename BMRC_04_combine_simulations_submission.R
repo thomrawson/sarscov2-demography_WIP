@@ -6,20 +6,25 @@ args <- commandArgs(trailingOnly = TRUE)
 task_id <- as.integer(args[1])
 
 pop_assumptions <- c(
+  "rtm_baseline",
   "ONS_NHS_region_principal",
   "ONS_NHS_region_low_migration",
   "ONS_NHS_region_high_migration"
 )
 
-pop_years <- c(2047, 
-               #2042, 
-               2037, #2032, 
-               2027)
+pop_years <- c(2047 )
+#2042, 
+#2037, 
+#2032, 
+#2027)
 
-vacc_assumptions <- c("baseline",
-                      "baseline_scaled_up",
-                      "baseline_scaled_up_and_reallocated",
-                      "vaccinate_young_earlier")
+vacc_assumptions <- c("no_vaccines")
+#"baseline",
+#"baseline_scaled_up",
+#"baseline_scaled_up_and_reallocated",
+#"vaccinate_young_earlier")
+
+#vacc_assumptions <- "1_month_earlier"
 
 # Create all combinations
 param_grid <- expand.grid(
