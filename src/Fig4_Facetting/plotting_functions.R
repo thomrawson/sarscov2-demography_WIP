@@ -19,8 +19,8 @@ plot_cumulative_facet <- function(sim_df, outcome_label, region_selected, y_nudg
   )
   plot_df$vaccine <- factor(
     plot_df$vaccine,
-    levels = c("baseline", "baseline_scaled_up_and_reallocated", "baseline_scaled_up"),
-    labels = c("2019 vaccinations", "Scaled and reallocated", "Scaled by age")
+    levels = c("baseline", "baseline_scaled_up_and_reallocated", "baseline_scaled_up", "1_month_earlier"),
+    labels = c("2019 vaccinations", "Scaled and reallocated", "Scaled by age", "1 month earlier")
   )
   
   # Order versions so the largest cumulative curve is drawn first (back),

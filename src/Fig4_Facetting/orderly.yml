@@ -15,6 +15,8 @@ artefacts:
       filenames:
         - Fig4.png
         - Fig4.pdf
+        - Fig4_3row.png
+        - Fig4_3row.pdf
   - data:
       description: Already processed data
       filenames:
@@ -75,6 +77,18 @@ depends:
       id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "baseline_scaled_up_and_reallocated")
       use:
         dependencies/baseline_p1v3_2027.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p1v4_2047.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == 2037 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p1v4_2037.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p1v4_2027.rds: parameters_base.rds
 ##########################################################################
   - 02_parameters:
       id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline")
@@ -112,6 +126,18 @@ depends:
       id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "baseline_scaled_up_and_reallocated")
       use:
         dependencies/baseline_p2v3_2027.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p2v4_2047.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2037 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p2v4_2037.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p2v4_2027.rds: parameters_base.rds
 ##########################################################################
   - 02_parameters:
       id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline")
@@ -149,6 +175,18 @@ depends:
       id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "baseline_scaled_up_and_reallocated")
       use:
         dependencies/baseline_p3v3_2027.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p3v4_2047.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2037 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p3v4_2037.rds: parameters_base.rds
+  - 02_parameters:
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/baseline_p3v4_2027.rds: parameters_base.rds
 ##########################################################################
   - 06_parsed_simulations:
       id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "rtm_baseline" && parameter:population_year == 2019 && parameter:vaccine_assumptions == "baseline")
@@ -201,6 +239,21 @@ depends:
       use:
         dependencies/p1v3_2027_output_dataframe.rds: combined_output_dataframe.rds
         dependencies/p1v3_2027_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p1v4_2047_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p1v4_2047_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == 2037 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p1v4_2037_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p1v4_2037_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_principal" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p1v4_2027_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p1v4_2027_index_names.rds: index_names.rds
 ###################################################################################################
   - 06_parsed_simulations:
       id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline")
@@ -247,6 +300,21 @@ depends:
       use:
         dependencies/p2v3_2027_output_dataframe.rds: combined_output_dataframe.rds
         dependencies/p2v3_2027_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p2v4_2047_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p2v4_2047_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2037 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p2v4_2037_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p2v4_2037_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_low_migration" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p2v4_2027_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p2v4_2027_index_names.rds: index_names.rds
 ###################################################################################################
   - 06_parsed_simulations:
       id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "baseline")
@@ -293,4 +361,19 @@ depends:
       use:
         dependencies/p3v3_2027_output_dataframe.rds: combined_output_dataframe.rds
         dependencies/p3v3_2027_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2047 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p3v4_2047_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p3v4_2047_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2037 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p3v4_2037_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p3v4_2037_index_names.rds: index_names.rds
+  - 06_parsed_simulations:
+      id: latest(parameter:assumptions == assumptions && parameter:param_iterations == param_iterations && parameter:deterministic == deterministic && parameter:population_assumptions == "ONS_NHS_region_high_migration" && parameter:population_year == 2027 && parameter:vaccine_assumptions == "1_month_earlier")
+      use:
+        dependencies/p3v4_2027_output_dataframe.rds: combined_output_dataframe.rds
+        dependencies/p3v4_2027_index_names.rds: index_names.rds
 ###################################################################################################
