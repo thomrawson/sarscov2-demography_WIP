@@ -178,6 +178,29 @@ for(i in 1:param_iterations){
                      Rt_all = Rt$Rt_all, 
                      Rt_general = Rt$Rt_general)
     
+    ## -compute prevalence-weighted total protection, while
+    ## prob_strain is still available -- same formula as spimalot's
+    ## calc_weighted_protected(): sum(protected_strain * prob_strain)
+    protected_names <- c("protected_S_vaccinated", "protected_R_vaccinated",
+                         "protected_R_unvaccinated")
+    
+    if (multistage_params[[j]]$pars$n_strains == 1) {
+      # only one strain circulating this epoch -- it already IS the
+      # total, since weight on strain 1 is trivially 1
+      weighted <- res_sim[protected_names, , drop = FALSE]
+    } else {
+      prob_strain_rows <- res_sim[c("prob_strain1", "prob_strain2"), , drop = FALSE]
+      weighted <- do.call(rbind, lapply(protected_names, function(nm) {
+        strain_rows <- res_sim[paste0(nm, c("1", "2")), , drop = FALSE]
+        colSums(strain_rows * prob_strain_rows)
+      }))
+    }
+    rownames(weighted) <- paste0(protected_names, "_weighted")
+    
+    index[paste0(protected_names, "_weighted")] <- 0L
+    res_sim <- rbind(res_sim, weighted)
+    ## ---- end protection weighting
+    
     ## To save space, we'll now cut the S, prob_strain, and R vectors. From res_sim AND index
     res_sim <- res_sim[-c(grep("^S[0-9]+$", names(index)), grep("prob_strain", names(index)), grep("^R[0-9]+$", names(index))),]
     ## And cut them from the index vector too.
