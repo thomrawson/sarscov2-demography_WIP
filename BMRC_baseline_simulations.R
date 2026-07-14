@@ -24,12 +24,24 @@ i <- param_grid$i[task_id]
 library(orderly1)
 
 orderly_run(
+  "02_parameters",
+  parameters = list(
+    population_assumptions = "rtm_baseline",
+    population_year = 2019,
+    #vaccine_assumptions = "baseline",
+    vaccine_assumptions = "no_vaccines"
+  ),
+  use_draft = "newer"
+)
+
+orderly_run(
   "03_simulations",
   parameters = list(
     region = i,
     population_assumptions = "rtm_baseline",
     population_year = 2019,
-    vaccine_assumptions = "baseline",
+    #vaccine_assumptions = "baseline",
+    vaccine_assumptions = "no_vaccines",
     param_iterations = 50000
   ),
   use_draft = "newer"
