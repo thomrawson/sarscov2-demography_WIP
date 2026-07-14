@@ -20,7 +20,7 @@ plot_cumulative_facet <- function(sim_df, outcome_label, region_selected, y_nudg
   plot_df$vaccine <- factor(
     plot_df$vaccine,
     levels = c("baseline", "baseline_scaled_up_and_reallocated", "baseline_scaled_up", "1_month_earlier"),
-    labels = c("2019 vaccinations", "Scaled and reallocated", "Scaled by age", "1 month earlier")
+    labels = c("Historic vaccinations", "Scaled and reallocated", "Scaled by age", "1 month earlier")
   )
   
   # Order versions so the largest cumulative curve is drawn first (back),
@@ -79,7 +79,7 @@ plot_cumulative_facet <- function(sim_df, outcome_label, region_selected, y_nudg
                         breaks = c("2019", "2047",
                                    "2037",
                                    "2027", "Data"),
-                        labels = c("2019 baseline", "2047 \nprojection", 
+                        labels = c("2020 \nbaseline", "2047 \nprojection", 
                                    "2037 \nprojection",
                                    "2027 \nprojection", "Data")) +
     scale_fill_manual(values = c("2019" = "#1b9e77",
@@ -90,7 +90,7 @@ plot_cumulative_facet <- function(sim_df, outcome_label, region_selected, y_nudg
                       breaks = c("2019", "2047",
                                  "2037",
                                  "2027", "Data"),
-                      labels = c("2019 baseline", "2047 \nprojection", 
+                      labels = c("2020 \nbaseline", "2047 \nprojection", 
                                  "2037 \nprojection",
                                  "2027 \nprojection", "Data")) +
     labs(
@@ -127,7 +127,7 @@ plot_cumulative_facet_per_capita <- function(sim_df, outcome_label, region_selec
   plot_df$vaccine <- factor(
     plot_df$vaccine,
     levels = c("baseline", "baseline_scaled_up_and_reallocated", "baseline_scaled_up"),
-    labels = c("2019 vaccinations", "Scaled and reallocated", "Scaled by age")
+    labels = c("Historic vaccinations", "Scaled and reallocated", "Scaled by age")
   )
   
   version_order <- plot_df |>
@@ -189,7 +189,7 @@ plot_cumulative_facet_per_capita <- function(sim_df, outcome_label, region_selec
                         breaks = c("2019", "2047",
                                    "2037",
                                    "2027", "Data"),
-                        labels = c("2019 baseline", "2047 \nprojection", 
+                        labels = c("2020 \nbaseline", "2047 \nprojection", 
                                    "2037 \nprojection",
                                    "2027 \nprojection", "Data")) +
     scale_fill_manual(values = c("2019" = "#1b9e77",
@@ -200,7 +200,7 @@ plot_cumulative_facet_per_capita <- function(sim_df, outcome_label, region_selec
                       breaks = c("2019", "2047",
                                  "2037",
                                  "2027", "Data"),
-                      labels = c("2019 baseline", "2047 \nprojection", 
+                      labels = c("2020 \nbaseline", "2047 \nprojection", 
                                  "2037 \nprojection",
                                  "2027 \nprojection", "Data")) +
     labs(

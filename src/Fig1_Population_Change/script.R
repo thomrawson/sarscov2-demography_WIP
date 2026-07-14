@@ -103,7 +103,7 @@ p1_mod <- ggplot(filter(pop_long, AREA %in% "england"),
                  aes(x = age_group, y = population/1e6, fill = scenario)) +
   geom_col(position = position_dodge(width = 0.8), width = 0.86, colour = NA) +
   scale_fill_manual(values = scenario_cols,
-                    labels = c("2019_baseline" = "2019 baseline", 
+                    labels = c("2019_baseline" = "2020 baseline", 
                                "ONS_NHS_region_principal" = "2047 central projection",
                                "ONS_NHS_region_low_migration" = "2047 low migration projection",
                                "ONS_NHS_region_high_migration" = "2047 high migration projection")) +
@@ -129,7 +129,7 @@ p2_mod <- ggplot(pop_wide %>% filter(AREA == "england"),
   geom_hline(yintercept = 0, color = "black", size = 0.4) +
   scale_y_continuous(labels = function(x) paste0(x, "%"), expand = expansion(mult = c(0, 0.02))) +
   scale_x_discrete(expand = c(0,0)) +
-  labs(title = "B)   Population % change from 2019 to 2047 - England",
+  labs(title = "B)   Population % change from 2020 to 2047 - England",
        x = "Age group", y = "Difference in population (%)", fill = "Direction") +
   my_theme +
   theme(
@@ -281,7 +281,7 @@ p_summary <- ggplot(totals_df,
                         y = factor(AREA, levels = AREA),
                         fill = pct_change > 0)) +
   geom_col(width = 0.8, colour = NA) +
-  scale_fill_manual(values = diff_cols, guide = FALSE) +
+  scale_fill_manual(values = diff_cols, guide = "none") +
   geom_vline(xintercept = 0, color = "black", size = 0.4) +
   scale_x_continuous(labels = function(x) paste0(x, "%"),
                      expand = expansion(mult = c(0,0.03))) +
@@ -294,7 +294,7 @@ p_summary <- ggplot(totals_df,
             color = "white",
             fontface = "bold") +
   
-  labs(title = sprintf("Total population %% change (2019 → %s)", as.character(population_year)),
+  labs(title = sprintf("Total population %% change (2020 → %s)", as.character(population_year)),
        x = "Percent change", y = NULL) +
   coord_cartesian(clip = "off") +           # allow labels to extend left
   my_theme +
@@ -316,7 +316,7 @@ all_plots <- c(list(p_summary), region_plots)
 
 # Arrange into 4 rows, 2 columns
 grid_plot <- wrap_plots(all_plots, ncol = 2, nrow = 4) +
-  plot_annotation(title = "Regional age group population changes",
+  plot_annotation(title = "Regional age group population changes from 2020 to ONS central 2047 projection",
                   theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5)))
 
 # Print to device
@@ -659,3 +659,5 @@ print(grid_plot)
  #final_patch <- p_england | p_map + plot_layout(widths = c(5, 2))
  
  ggsave("Fig1_w_vaccs.png", final_w_vaccs, width = 16, height = 13, dpi = 300)
+ 
+ while (length(dev.list()) > 1) dev.off()

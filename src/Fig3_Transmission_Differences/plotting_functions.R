@@ -39,25 +39,25 @@ plot_time_series <- function(sim_df, data_df, outcome_label, region_selected) {
     geom_vline(xintercept = as.Date('2021-03-31'), alpha = 0.8, color = 'black') +
     geom_vline(xintercept = as.Date(grey_lines), alpha = 0.7, color = label_cols, lty = 'dashed') +
     scale_colour_manual(values = c("Factual" = "#1b9e77",
-                                   "Counterfactual_principal" = "#d95f02",
+                                   "Counterfactual_2047" = "#d95f02",
                                    "Counterfactual_low_migration" = "#0099B4FF",
                                    "Counterfactual_high_migration" = "#925E9FFF",
                                    "Data" = "#AD002AFF"),
-                        breaks = c("Factual", "Counterfactual_principal",
+                        breaks = c("Factual", "Counterfactual_2047",
                                    "Counterfactual_low_migration",
                                    "Counterfactual_high_migration", "Data"),
-                        labels = c("2019 baseline", "2047 central \nprojection", 
+                        labels = c("2020 baseline", "2047 central \nprojection", 
                                    "2047 low migration \nprojection",
                                    "2047 high migration \nprojection", "Data")) +
     scale_fill_manual(values = c("Factual" = "#1b9e77",
-                                 "Counterfactual_principal" = "#d95f02",
+                                 "Counterfactual_2047" = "#d95f02",
                                  "Counterfactual_low_migration" = "#0099B4FF",
                                  "Counterfactual_high_migration" = "#925E9FFF",
                                  "Data" = "#AD002AFF"),
-                      breaks = c("Factual", "Counterfactual_principal",
+                      breaks = c("Factual", "Counterfactual_2047",
                                  "Counterfactual_low_migration",
                                  "Counterfactual_high_migration", "Data"),
-                      labels = c("2019 baseline", "2047 central \nprojection", 
+                      labels = c("2020 baseline", "2047 central \nprojection", 
                                  "2047 low migration \nprojection",
                                  "2047 high migration \nprojection", "Data")) +
     labs(
@@ -113,25 +113,25 @@ plot_time_series_per_capita <- function(sim_df, data_df, outcome_label, region_s
     geom_vline(xintercept = as.Date('2021-03-31'), alpha = 0.8, color = 'black') +
     geom_vline(xintercept = as.Date(grey_lines), alpha = 0.7, color = label_cols, lty = 'dashed') +
     scale_colour_manual(values = c("Factual" = "#1b9e77",
-                                   "Counterfactual_principal" = "#d95f02",
+                                   "Counterfactual_2047" = "#d95f02",
                                    "Counterfactual_low_migration" = "#0099B4FF",
                                    "Counterfactual_high_migration" = "#925E9FFF",
                                    "Data" = "#AD002AFF"),
-                        breaks = c("Factual", "Counterfactual_principal",
+                        breaks = c("Factual", "Counterfactual_2047",
                                    "Counterfactual_low_migration",
                                    "Counterfactual_high_migration", "Data"),
-                        labels = c("2019 baseline", "2047 central \nprojection", 
+                        labels = c("2020 baseline", "2047 central \nprojection", 
                                    "2047 low migration \nprojection",
                                    "2047 high migration \nprojection", "Data")) +
     scale_fill_manual(values = c("Factual" = "#1b9e77",
-                                 "Counterfactual_principal" = "#d95f02",
+                                 "Counterfactual_2047" = "#d95f02",
                                  "Counterfactual_low_migration" = "#0099B4FF",
                                  "Counterfactual_high_migration" = "#925E9FFF",
                                  "Data" = "#AD002AFF"),
-                      breaks = c("Factual", "Counterfactual_principal",
+                      breaks = c("Factual", "Counterfactual_2047",
                                  "Counterfactual_low_migration",
                                  "Counterfactual_high_migration", "Data"),
-                      labels = c("2019 baseline", "2047 central \nprojection", 
+                      labels = c("2020 baseline", "2047 central \nprojection", 
                                  "2047 low migration \nprojection",
                                  "2047 high migration \nprojection", "Data")) +
     labs(
@@ -207,18 +207,18 @@ plot_cumulative <- function(sim_df, outcome_label, region_selected, y_nudge_valu
     scale_colour_manual(
       values = c(
         "Factual" = "#1b9e77",
-        "Counterfactual_principal" = "#d95f02",
+        "Counterfactual_2047" = "#d95f02",
         "Counterfactual_low_migration" = "#0099B4FF",
         "Counterfactual_high_migration" = "#925E9FFF"
       ),
       breaks = c(
         "Factual",
-        "Counterfactual_principal",
+        "Counterfactual_2047",
         "Counterfactual_low_migration",
         "Counterfactual_high_migration"
       ),
       labels = c(
-        "2019 baseline",
+        "2020 baseline",
         "2047 central \nprojection",
         "2047 low migration \nprojection",
         "2047 high migration \nprojection"
@@ -227,18 +227,18 @@ plot_cumulative <- function(sim_df, outcome_label, region_selected, y_nudge_valu
     scale_fill_manual(
       values = c(
         "Factual" = "#1b9e77",
-        "Counterfactual_principal" = "#d95f02",
+        "Counterfactual_2047" = "#d95f02",
         "Counterfactual_low_migration" = "#0099B4FF",
         "Counterfactual_high_migration" = "#925E9FFF"
       ),
       breaks = c(
         "Factual",
-        "Counterfactual_principal",
+        "Counterfactual_2047",
         "Counterfactual_low_migration",
         "Counterfactual_high_migration"
       ),
       labels = c(
-        "2019 baseline",
+        "2020 baseline",
         "2047 central \nprojection",
         "2047 low migration \nprojection",
         "2047 high migration \nprojection"
@@ -314,18 +314,18 @@ plot_cumulative_per_capita <- function(sim_df, outcome_label, region_selected, y
     scale_colour_manual(
       values = c(
         "Factual" = "#1b9e77",
-        "Counterfactual_principal" = "#d95f02",
+        "Counterfactual_2047" = "#d95f02",
         "Counterfactual_low_migration" = "#0099B4FF",
         "Counterfactual_high_migration" = "#925E9FFF"
       ),
       breaks = c(
         "Factual",
-        "Counterfactual_principal",
+        "Counterfactual_2047",
         "Counterfactual_low_migration",
         "Counterfactual_high_migration"
       ),
       labels = c(
-        "2019 baseline",
+        "2020 baseline",
         "2047 central \nprojection",
         "2047 low migration \nprojection",
         "2047 high migration \nprojection"
@@ -334,18 +334,18 @@ plot_cumulative_per_capita <- function(sim_df, outcome_label, region_selected, y
     scale_fill_manual(
       values = c(
         "Factual" = "#1b9e77",
-        "Counterfactual_principal" = "#d95f02",
+        "Counterfactual_2047" = "#d95f02",
         "Counterfactual_low_migration" = "#0099B4FF",
         "Counterfactual_high_migration" = "#925E9FFF"
       ),
       breaks = c(
         "Factual",
-        "Counterfactual_principal",
+        "Counterfactual_2047",
         "Counterfactual_low_migration",
         "Counterfactual_high_migration"
       ),
       labels = c(
-        "2019 baseline",
+        "2020 baseline",
         "2047 central \nprojection",
         "2047 low migration \nprojection",
         "2047 high migration \nprojection"

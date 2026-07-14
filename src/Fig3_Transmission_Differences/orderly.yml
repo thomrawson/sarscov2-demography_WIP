@@ -57,7 +57,7 @@ depends:
       use:
         dependencies/baseline_high_migration.rds: parameters_base.rds
   - Fig2_Health_Outcomes:
-      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:population_year == population_year && parameter:vaccine_assumptions == vaccine_assumptions)
+      id: latest(parameter:assumptions == assumptions && parameter:deterministic == deterministic && parameter:vaccine_assumptions == vaccine_assumptions)
       use:
         simulation_data.rds: Figure_dataframes/simulation_data.rds
   - 02_parameters:

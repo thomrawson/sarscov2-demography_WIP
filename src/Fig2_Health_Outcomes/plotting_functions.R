@@ -46,7 +46,7 @@ plot_time_series <- function(sim_df, data_df, outcome_label, region_selected) {
                         breaks = c("Factual", "Counterfactual_2047",
                                    "Counterfactual_2037",
                                    "Counterfactual_2027", "Data"),
-                        labels = c("2019 baseline", "2047 central\nprojection", 
+                        labels = c("2020 baseline", "2047 central\nprojection", 
                                    "2037 \nprojection",
                                    "2027 \nprojection", "Data")) +
     scale_fill_manual(values = c("Factual" = "#1b9e77",
@@ -57,7 +57,7 @@ plot_time_series <- function(sim_df, data_df, outcome_label, region_selected) {
                       breaks = c("Factual", "Counterfactual_2047",
                                  "Counterfactual_2037",
                                  "Counterfactual_2027", "Data"),
-                      labels = c("2019 baseline", "2047 central\nprojection", 
+                      labels = c("2020 baseline", "2047 central\nprojection", 
                                  "2037 \nprojection",
                                  "2027 \nprojection", "Data")) +
     labs(
@@ -120,7 +120,7 @@ plot_time_series_per_capita <- function(sim_df, data_df, outcome_label, region_s
                         breaks = c("Factual", "Counterfactual_2047",
                                    "Counterfactual_2037",
                                    "Counterfactual_2027", "Data"),
-                        labels = c("2019 baseline", "2047 central\nprojection", 
+                        labels = c("2020 baseline", "2047 central\nprojection", 
                                    "2037 \nprojection",
                                    "2027 \nprojection", "Data")) +
     scale_fill_manual(values = c("Factual" = "#1b9e77",
@@ -131,7 +131,7 @@ plot_time_series_per_capita <- function(sim_df, data_df, outcome_label, region_s
                       breaks = c("Factual", "Counterfactual_2047",
                                  "Counterfactual_2037",
                                  "Counterfactual_2027", "Data"),
-                      labels = c("2019 baseline", "2047 central\nprojection", 
+                      labels = c("2020 baseline", "2047 central\nprojection", 
                                  "2037 \nprojection",
                                  "2027 \nprojection", "Data")) +
     labs(
@@ -212,7 +212,7 @@ plot_cumulative <- function(sim_df, outcome_label, region_selected, y_nudge_valu
                         breaks = c("Factual", "Counterfactual_2047",
                                    "Counterfactual_2037",
                                    "Counterfactual_2027", "Data"),
-                        labels = c("2019 baseline", "2047 \nprojection", 
+                        labels = c("2020 baseline", "2047 \nprojection", 
                                    "2037 \nprojection",
                                    "2027 \nprojection", "Data")) +
     scale_fill_manual(values = c("Factual" = "#1b9e77",
@@ -223,7 +223,7 @@ plot_cumulative <- function(sim_df, outcome_label, region_selected, y_nudge_valu
                       breaks = c("Factual", "Counterfactual_2047",
                                  "Counterfactual_2037",
                                  "Counterfactual_2027", "Data"),
-                      labels = c("2019 baseline", "2047 \nprojection", 
+                      labels = c("2020 baseline", "2047 \nprojection", 
                                  "2037 \nprojection",
                                  "2027 \nprojection", "Data")) +
     labs(
@@ -301,7 +301,7 @@ plot_cumulative_per_capita <- function(sim_df, outcome_label, region_selected, y
                         breaks = c("Factual", "Counterfactual_2047",
                                    "Counterfactual_2037",
                                    "Counterfactual_2027", "Data"),
-                        labels = c("2019 baseline", "2047 \nprojection", 
+                        labels = c("2020 baseline", "2047 \nprojection", 
                                    "2037 \nprojection",
                                    "2027 \nprojection", "Data")) +
     scale_fill_manual(values = c("Factual" = "#1b9e77",
@@ -312,7 +312,7 @@ plot_cumulative_per_capita <- function(sim_df, outcome_label, region_selected, y
                       breaks = c("Factual", "Counterfactual_2047",
                                  "Counterfactual_2037",
                                  "Counterfactual_2027", "Data"),
-                      labels = c("2019 baseline", "2047 \nprojection", 
+                      labels = c("2020 baseline", "2047 \nprojection", 
                                  "2037 \nprojection",
                                  "2027 \nprojection", "Data")) +
     labs(
