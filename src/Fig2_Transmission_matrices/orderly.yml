@@ -6,8 +6,8 @@ artefacts:
   - staticgraph:
       description: supplementary figures
       filenames:
-        - FigS5.png
-        - FigS5.pdf
+        - Fig2.png
+        - Fig2.pdf
         - contact_matrices_baseline_counterfactual_diff.pdf
         - contact_matrices_baseline_counterfactual_diff.png
 
@@ -31,12 +31,7 @@ packages:
   - patchwork
   
 resources:
-  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.cpg
-  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.dbf
-  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.prj
-  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp
-  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp.xml
-  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shx
+
 
 depends:
   - 00_population_projections:

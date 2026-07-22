@@ -275,7 +275,7 @@ p_trans_diff <- ggplot() +
 
 combined <- (p_baseline + p_counterfactual) / (p_diff + p_trans_diff)
 
-ggsave("FigS5.pdf", combined,
+ggsave("Fig2.pdf", combined,
        width = 12, height = 11, units = "in", dpi = 300)
-ggsave("FigS5.png", combined,
+ggsave("Fig2.png", combined,
        width = 12, height = 11, units = "in", dpi = 300)
