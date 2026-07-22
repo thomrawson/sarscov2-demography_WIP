@@ -15,8 +15,8 @@ artefacts:
   - staticgraph:
       description: supplementary figures
       filenames:
-        - Fig6.png
-        - Fig6.pdf
+        - Fig3.png
+        - Fig3.pdf
         - fig_a_doses_per_capita.png
 
 packages:

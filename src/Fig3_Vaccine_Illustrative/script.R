@@ -323,8 +323,8 @@ fig_b <- (heatmap_panel("A) Historic vaccinations") |
   (heatmap_panel("C) Scaled by age", show_legend = TRUE) |
      fig_daily)
 
-ggsave("Fig6_from_df.png", fig_b, width = 12, height = 10, dpi = 300)
-ggsave("Fig6_from_df.pdf", fig_b, width = 12, height = 10, dpi = 300)
+ggsave("Fig3_from_df.png", fig_b, width = 12, height = 10, dpi = 300)
+ggsave("Fig3_from_df.pdf", fig_b, width = 12, height = 10, dpi = 300)
 
 ###########################################################################
 # re-make the plot using the schedule data too, which doesn't deal with the catch-up cases
@@ -409,5 +409,5 @@ fig_b <- (heatmap_panel("A) Historic vaccinations") |
   (heatmap_panel("C) Scaled by age", show_legend = TRUE) |
      fig_barbell)
 
-ggsave("Fig6.png", fig_b, width = 12, height = 10, dpi = 300)
-ggsave("Fig6.pdf", fig_b, width = 12, height = 10, dpi = 300)
+ggsave("Fig3.png", fig_b, width = 12, height = 10, dpi = 300)
+ggsave("Fig3.pdf", fig_b, width = 12, height = 10, dpi = 300)
