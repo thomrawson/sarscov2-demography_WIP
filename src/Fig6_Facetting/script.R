@@ -664,12 +664,12 @@ saveRDS(simulation_data, "Figure_dataframes/figure_data.rds")
 f4 <- plot_cumulative_facet(figure_data, "Hospitalisations \n(thousands)", "england", -150)
 f4 <- f4 + ggtitle("Cumulative Daily Confirmed Hospitalisations by Vaccination and Migration Assumptions")
 ggsave(
-  filename = "Fig4.png",
+  filename = "Fig6.png",
   plot = f4,
   width = 13, height = 10.4, dpi = 320        
 )
 ggsave(
-  filename = "Fig4.pdf",
+  filename = "Fig6.pdf",
   plot = f4,
   width = 13, height = 10.4, dpi = 320        
 )
@@ -679,17 +679,17 @@ f4 <- plot_cumulative_facet(filter(figure_data,
                             "Hospitalisations \n(thousands)", "england", -150)
 f4 <- f4 + ggtitle("Cumulative Daily Confirmed Hospitalisations by Vaccination and Migration Assumptions")
 ggsave(
-  filename = "Fig4_3row.png",
+  filename = "Fig6_3row.png",
   plot = f4,
   width = 13, height = 7.8, dpi = 320        
 )
 ggsave(
-  filename = "Fig4_3row.pdf",
+  filename = "Fig6_3row.pdf",
   plot = f4,
   width = 13, height = 7.8, dpi = 320        
 )
 
-f4_per_capita <- plot_cumulative_facet_per_capita(figure_data, "Hospitalisations", "england")
+# f4_per_capita <- plot_cumulative_facet_per_capita(figure_data, "Hospitalisations", "england")
 # p2_per_capita <- p2_per_capita + ggtitle("Cumulative Daily Confirmed Hospitalisations Per Capita")
 # ggsave(
 #   filename = "Figures/individual_panels/Fig2_p2_per_capita.png",

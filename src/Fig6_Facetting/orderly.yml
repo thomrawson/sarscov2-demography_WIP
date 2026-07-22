@@ -13,10 +13,10 @@ artefacts:
   - staticgraph:
       description: supplementary figures
       filenames:
-        - Fig4.png
-        - Fig4.pdf
-        - Fig4_3row.png
-        - Fig4_3row.pdf
+        - Fig6.png
+        - Fig6.pdf
+        - Fig6_3row.png
+        - Fig6_3row.pdf
   - data:
       description: Already processed data
       filenames:

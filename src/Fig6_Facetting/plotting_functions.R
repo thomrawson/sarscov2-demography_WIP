@@ -1,4 +1,4 @@
-### All Fig4 plotting functions
+### All Fig6 plotting functions
 ######################################
 #######
 #cumulative
