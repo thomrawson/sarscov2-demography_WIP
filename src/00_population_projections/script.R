@@ -141,7 +141,7 @@ population_wide <- population_wide %>%
   left_join(
     ONS_forecasts %>%
       select(AREA, CODE) %>%
-      distinct(),   # important: avoid duplicates
+      distinct(),   # avoid duplicates
     by = "AREA"
   )
 
@@ -232,7 +232,7 @@ population_wide <- population_wide %>%
   left_join(
     ONS_forecasts %>%
       select(AREA, CODE) %>%
-      distinct(),   # important: avoid duplicates
+      distinct(),   # avoid duplicates
     by = "AREA"
   )
 
@@ -240,6 +240,6 @@ population_wide <- population_wide %>%
 ONS_forecasts <- rbind(ONS_forecasts, population_wide)
 
 
-## Set a description of the scenario
+## Output final dataframe
 dir.create("outputs")
 saveRDS(ONS_forecasts, "outputs/ONS_population_projections.rds")
