@@ -38,7 +38,7 @@ if (!all_same) {
 index <- index[[1]]
 index_names <- names(index)
 ##################################
-## We have to load all simulations so we can add them all together to make the England total one.
+## We have to load all simulations so we can add them all together to make the England totals.
 regional_simulations <- list(east_of_england = readRDS("regional_simulations/east_of_england_sim.rds"),
                              london = readRDS("regional_simulations/london_sim.rds"),
                              midlands = readRDS("regional_simulations/midlands_sim.rds"),
@@ -49,13 +49,13 @@ regional_simulations <- list(east_of_england = readRDS("regional_simulations/eas
                              )
 # Add all together to get England total across all indices.
 # However, some of the rows we don't want to sum, we want to take the population weighted average, e.g. Rt and ifr
-# So we'll define a custom function to do that.
+# So we define a custom function to do that.
 dont_sum <- c("time", 
               "ihr", "hfr", "ifr",
               "eff_Rt_all", "eff_Rt_general",
               "Rt_all", "Rt_general")
 
-# Inputs I provide:
+# Inputs to provide:
 # regional_simulations : list of length 7 (regions), each is a list length param_iterations of matrices (n_row x n_col)
 # param_iterations     : integer, number of iterations (e.g. 100)
 # pop                  : numeric vector length 7, population per region (used as weights)
@@ -138,7 +138,7 @@ england_simulations <- make_england_from_regions(regional_simulations,
 #   m[1, ] <- regional_simulations$east_of_england[[1]][which(index_names == "time"),]
 #   m
 # })
-##################################
+########################################
 ## Define a function that takes an array in, and returns the dataframe version with the mean and 95% CrIs.
 
 summarise_iterations <- function(mat_list, index_names, region_name,
