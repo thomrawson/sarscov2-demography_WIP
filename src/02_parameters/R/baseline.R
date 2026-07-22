@@ -587,7 +587,7 @@ create_baseline <- function(region, date, restart_date,
     # eg. if there is 8% more total population in a region, then you give 108 doses instead of 100
     # This is then reallocated according to rollout strategy
     # Note, this is different to baseline_reallocated, which actually scales up each daily doses by age by the age-specific population change
-    # This is more reasonable as it's a better metric of staffing and GDP
+    # This is more reasonable as it's a better reflection of staffing and GDP
     #First do the "scale up" chunk:
     baseline_pop <- sircovid:::sircovid_population(region)
     difference_in_pop <- sum(population_SET)/sum(baseline_pop)
