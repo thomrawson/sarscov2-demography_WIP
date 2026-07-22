@@ -4,7 +4,7 @@ source("plotting_functions.R")
 ## Load simulation data
 ########################
 simulation_data <- readRDS("simulation_data.rds")
-# Because time is a double we need to just make sure they're all within machine-precision:
+# Because time is a double we just need to make sure they're all within machine-precision:
 simulation_data$time <- round(simulation_data$time)
 dir.create("Figures")
 dir.create("Figures/individual_panels")
@@ -267,7 +267,7 @@ p2 <- plot_time_series(p1_sim_data, p1_real_data,
                        "Effective Rt", "england")
 p2 <- p2 + ggtitle("Effective Reproduction Number") + guides(colour = guide_legend(override.aes = list(shape = NA)))
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p2.png",
+  filename = "Figures/individual_panels/Fig5_p2.png",
   plot = p2,
   width = 10, height = 6, dpi = 320 
 )
@@ -281,7 +281,7 @@ p2b <- plot_time_series(p1b_sim_data, p1b_real_data,
                        "Rt", "england")
 p2b <- p2b + ggtitle("Reproduction Number") + guides(colour = guide_legend(override.aes = list(shape = NA)))
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p2b.png",
+  filename = "Figures/individual_panels/Fig5_p2b.png",
   plot = p2b,
   width = 10, height = 6, dpi = 320 
 )
@@ -295,7 +295,7 @@ p1 <- plot_time_series(p1_sim_data, p1_real_data,
                        "Symptomatic Cases", "england")
 p1 <- p1 + ggtitle("Pillar 2 Symptomatic Cases") + guides(colour = guide_legend(override.aes = list(shape = NA)))
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p1.png",
+  filename = "Figures/individual_panels/Fig5_p1.png",
   plot = p1,
   width = 10, height = 6, dpi = 320 
 )
@@ -332,12 +332,12 @@ lower_min <- min(y1[1], y2[1])
 s1 <- s1 + coord_cartesian(ylim = c(lower_min, upper_max))
 s2 <- s2 + coord_cartesian(ylim = c(lower_min, upper_max))
 ggsave(
-  filename = "Figures/individual_panels/Fig3_s1.png",
+  filename = "Figures/individual_panels/Fig5_s1.png",
   plot = s1,
   width = 10, height = 6, dpi = 320 
 )
 ggsave(
-  filename = "Figures/individual_panels/Fig3_s2.png",
+  filename = "Figures/individual_panels/Fig5_s2.png",
   plot = s2,
   width = 10, height = 6, dpi = 320 
 )
@@ -350,7 +350,7 @@ s3 <- plot_sympt_cases_age_proportion(
   version_selected = "Factual"
 ) + ggtitle("Proportion of Symptomatic Cases by Age (2020 Baseline)")
 ggsave(
-  filename = "Figures/individual_panels/Fig3_s3.png",
+  filename = "Figures/individual_panels/Fig5_s3.png",
   plot = s3,
   width = 10, height = 6, dpi = 320
 )
@@ -363,7 +363,7 @@ s4 <- plot_sympt_cases_age_proportion(
   version_selected = "Counterfactual_2047"
 ) + ggtitle("Proportion of Symptomatic Cases by Age (2047 Central Projection)")
 ggsave(
-  filename = "Figures/individual_panels/Fig3_s4.png",
+  filename = "Figures/individual_panels/Fig5_s4.png",
   plot = s4,
   width = 10, height = 6, dpi = 320
 )
@@ -408,7 +408,7 @@ s4 <- plot_population_adjusted_case_ratio(
   region_selected = "england"
 ) + ggtitle("Population-adjusted Daily Symptomatic Cases Ratio (2020 Baseline vs 2047 Central Projection)")
 ggsave(
-  filename = "Figures/individual_panels/Fig3_s4.png",
+  filename = "Figures/individual_panels/Fig5_s4.png",
   plot = s4,
   width = 10, height = 6, dpi = 320
 )
@@ -435,7 +435,7 @@ s5 <- plot_population_adjusted_cumulative_case_ratio(
   region_selected = "england"
 ) + ggtitle("Population-adjusted Cumulative Symptomatic Cases Ratio \n(2020 Baseline vs 2047 Central Projection)")
 ggsave(
-  filename = "Figures/individual_panels/Fig3_s5.png",
+  filename = "Figures/individual_panels/Fig5_s5.png",
   plot = s5,
   width = 10, height = 6, dpi = 320
 )
@@ -470,7 +470,7 @@ p3 <- plot_population_adjusted_rolling_cumulative_case_ratio(
   region_selected = "england"
 ) + ggtitle("Population-adjusted 6-month Rolling Cumulative \nSymptomatic Cases Ratio \n(2020 Baseline vs 2047 Central Projection)")
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p3.png",
+  filename = "Figures/individual_panels/Fig5_p3.png",
   plot = p3,
   width = 10, height = 6, dpi = 320
 )
@@ -489,7 +489,7 @@ p4 <- plot_population_adjusted_rolling_cumulative_case_ratio_hosps(
   region_selected = "england"
 ) + ggtitle("Population-adjusted 6-month Rolling Cumulative \nHospitalisations Ratio \n(2020 Baseline vs 2047 Central Projection)")
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p3b.png",
+  filename = "Figures/individual_panels/Fig5_p3b.png",
   plot = p4,
   width = 10, height = 6, dpi = 320
 )
@@ -506,7 +506,7 @@ p4 <- plot_population_adjusted_rolling_cumulative_case_ratio_deaths(
   region_selected = "england"
 ) + ggtitle("Population-adjusted 6-month Rolling \nCumulative Deaths Ratio \n(2020 Baseline vs 2047 Central Projection)")
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p4.png",
+  filename = "Figures/individual_panels/Fig5_p4.png",
   plot = p4,
   width = 10, height = 6, dpi = 320
 )
@@ -551,7 +551,7 @@ vaccine_df <- mutate(vaccine_df, age_group = factor(age_group, levels = age_leve
 
 ## First, we have to convert the dataframe to instead be capturing the number in that vaccine class currently
 ## That means subtracting the # in the onward class, from the # in the current class
-# Let's cut the credible intervals for this
+## Let's cut the credible intervals for this
 vaccine_current_df <- select(vaccine_df, region, time, age_group, population, vaccine_strata, mean_cum_doses, version)
 
 vaccine_current_df <- vaccine_current_df %>%
@@ -823,7 +823,7 @@ p5 <- p5 +
   )
 
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p5.png",
+  filename = "Figures/individual_panels/Fig5_p5.png",
   plot = p5,
   width = 16,      # inches
   height = 10,      # inches
@@ -923,7 +923,7 @@ ggplot(plot_df_sum,
   ) -> p6
 
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p6.png",
+  filename = "Figures/individual_panels/Fig5_p6.png",
   plot = p6,
   width = 16,      # inches
   height = 10,      # inches
@@ -1051,7 +1051,7 @@ ggplot(
   ) )-> p7
 
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p7.png",
+  filename = "Figures/individual_panels/Fig5_p7.png",
   plot = p7,
   width = 16,      # inches
   height = 10,      # inches
@@ -1119,15 +1119,15 @@ ggplot(
   ) -> p8
 
 ggsave(
-  filename = "Figures/individual_panels/Fig3_p8.png",
+  filename = "Figures/individual_panels/Fig5_p8.png",
   plot = p8,
   width = 16,      # inches
   height = 10,      # inches
   dpi = 320        # high resolution
 )
 #########################################
-## Stick it all together into a possible figure 3
-Fig3 <- plot_grid(p1, p2, 
+## Stick it all together into a possible figure 5
+Fig5 <- plot_grid(p1, p2, 
                   #p3, p4,
                   
                   p5, p6,
@@ -1137,8 +1137,8 @@ Fig3 <- plot_grid(p1, p2,
                   labels = "AUTO",
                   #rel_widths = c(1.5, 1), 
                   align = "v")
-Fig3 <- Fig3 + theme(plot.background = element_rect(fill = "white", colour = NA))
+Fig5 <- Fig5 + theme(plot.background = element_rect(fill = "white", colour = NA))
 #final_patch <- p_england | p_map + plot_layout(widths = c(5, 2))
 
-ggsave("Fig3.png", Fig3, width = 13, height = 16, dpi = 320)
-ggsave("Fig3.pdf", Fig3, width = 16, height = 12, dpi = 320)
+ggsave("Fig5.png", Fig5, width = 13, height = 16, dpi = 320)
+ggsave("Fig5.pdf", Fig5, width = 16, height = 12, dpi = 320)

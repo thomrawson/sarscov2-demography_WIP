@@ -1,4 +1,4 @@
-### All Fig2 plotting functions
+### All Fig5 plotting functions
 ######################################
 #Panel 1
 plot_time_series <- function(sim_df, data_df, outcome_label, region_selected) {

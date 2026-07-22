@@ -17,8 +17,8 @@ artefacts:
   - staticgraph:
       description: supplementary figures
       filenames:
-        - Fig3.png
-        - Fig3.pdf
+        - Fig5.png
+        - Fig5.pdf
 
 packages:
   - sircovid
