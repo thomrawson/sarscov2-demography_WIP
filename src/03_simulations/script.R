@@ -8,14 +8,12 @@ baseline <- baseline_list[[region]]
 
 epoch_dates <- baseline$epoch_dates
 final_date <- baseline$date
-## Check all epoch dates that are beyond our final date
+## Remove all epoch dates that are beyond our final date
 epoch_dates <- epoch_dates[epoch_dates <= sircovid_date(final_date)]
 # 2) source the transform helpers (this will define compute_severity(), compute_progression(), compute_observation(), make_transform())
 #source("parameters/transform.R")
 
-
 #############################################################
-## FIX???
 # Create a private environment and inject the required globals
 transform_env <- new.env(parent = baseenv())
 transform_env$assumptions <- assumptions
@@ -34,26 +32,24 @@ make_transform_fn <- get("make_transform", envir = transform_env, inherits = FAL
 transform_fun <- make_transform_fn(baseline)
 #########################################################################################
 
-# 3) create the transform closure
-#transform_fun <- make_transform(baseline)
-
-# 4) load the pars samples from the 1000 fits of the severity paper:
+# 3) load the pars samples from the 1000 fits of the severity paper:
 severity_fits_parameters <- readRDS("data/severity_fits_parameters.rds")
 severity_fits_parameters <- severity_fits_parameters[[region]]
 
 final_hosps <- list()
 final_vaccs <- list()
 
-## Can I actually parallelise this?
+## Begin the simulation process
 for(i in 1:param_iterations){
   idx <- ((i - 1) %% nrow(severity_fits_parameters)) + 1
   numeric_initial <- severity_fits_parameters[idx,]
   if (is.null(names(numeric_initial))) stop("initial vector is not named — something unexpected in pars_meta$mcmc$initial()")
   
-  # 6) call the transform to get the multistage parameters object
+  # call the transform to get the multistage parameters object
   multistage_params <- transform_fun(numeric_initial)
   iteration_hosps <- NULL
   iteration_vaccs <- NULL
+  # Each epoch is run separately, as they initialise differently
   for(j in 1:(length(epoch_dates)+1)){
     mod <- sircovid::lancelot$new(multistage_params[[j]]$pars, ifelse(j==1, 0, (epoch_dates[j-1]/multistage_params[[j-1]]$pars$dt)-1),
                                   1) #, seed = 1L) #pars, init time, and n_particles
