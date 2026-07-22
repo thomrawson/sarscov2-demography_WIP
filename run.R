@@ -28,7 +28,7 @@ orderly_run("02_parameters",
                                                                                              #"1_month_earlier" is same as baseline_scaled_up_and_reallocated but doses 1 and 2 are shifted forward 30 days - an exploratory scenario not mentioned in publication
             use_draft = "newer")  
 
-# Run all parameter tasks
+# Build grid of all parameter tasks to be run
 pop_assumptions <- c("ONS_NHS_region_principal", "ONS_NHS_region_low_migration", "ONS_NHS_region_high_migration")
 pop_years <- c(2047, 2037, 2027)
 vacc_assumptions <- c("baseline", "baseline_scaled_up", "baseline_scaled_up_and_reallocated")
@@ -43,6 +43,7 @@ param_grid <- expand.grid(
 param_grid <- rbind(param_grid, data.frame(i = "rtm_baseline",
                                            j = 2019,
                                            k = "baseline"))
+#Run each task
 for(task_id in 1:nrow(param_grid)){
   orderly_run("02_parameters",
               parameters = list(population_assumptions = param_grid$i[task_id],
@@ -136,7 +137,6 @@ for(task_id in 1:nrow(param_grid)){
 ##################################################
 # Plotting
 ##################################################
-# Examine the difference between the population assumptions
 
 orderly_run("Fig1_Population_Change",
             parameters = list(population_assumptions = "ONS_NHS_region_principal",
