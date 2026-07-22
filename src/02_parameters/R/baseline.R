@@ -40,7 +40,6 @@ create_baseline <- function(region, date, restart_date,
   data_vaccination <- read_csv("data_vaccination.csv")
   
   # c. External data (default parameters)
-  # TODO: might make more sense to put these back into this task at some point
   progression_data <- read_csv(spimalot_file("extdata/support_progression.csv"))
   severity_data <- read_csv("data/support_severity.csv")
   
@@ -318,7 +317,6 @@ create_baseline <- function(region, date, restart_date,
   
   # Vaccine eligibility by age; min_18 only here, though we never
   # actually use it in the fits which are driven by data.
-  ## TODO: remove from here; best placed in parameters simulation task/will remove form here soon.  
   vaccine_eligibility_min_age <- 5
   
   # Average duration of stay in each vaccinated compartment
@@ -627,7 +625,7 @@ create_baseline <- function(region, date, restart_date,
     }else if(vaccine_assumptions == "vaccinate_young_earlier"){
       #This only makes sense if we're not doing rtm_baseline population
       stopifnot(population_assumptions != "rtm_baseline")
-      # This scenario assumes that we scale all total daily doses by the total population change in that respective region
+      # This scenario also assumes that we scale all total daily doses by the total population change in that respective region
       # eg. if there is 8% more total population in a region, then you give 108 doses instead of 100
       # This is then reallocated according to rollout strategy
       # Note, this is different to baseline_reallocated, which actually scales up each daily doses by age by the age-specific population change

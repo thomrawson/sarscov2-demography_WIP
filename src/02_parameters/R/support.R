@@ -40,7 +40,7 @@ add_parameter <- function(pars, name, initial, min, max, proposal, integer) {
   info <- rbind(pars$info, info_new)
   info <- info[order(info$region, info$name), ]
 
-  proposal_values <- proposal # TODO: rewrite to avoid churn later
+  proposal_values <- proposal
   proposal <- pars$proposal
   proposal[[name]] <- 0
   k <- proposal$name == proposal$name[1]

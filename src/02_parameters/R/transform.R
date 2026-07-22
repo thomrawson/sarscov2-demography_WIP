@@ -1,5 +1,5 @@
 compute_severity <- function(pars, severity_data, assumptions) {
-  dt <- 0.25 # TODO: tidy this up
+  dt <- 0.25 
   expected <- c("mu_D", "mu_D_2", "mu_D_3", "mu_D_4", "mu_D_5",
                 "p_G_D",
                 "p_G_D_2", "p_H", "p_H_2", "p_H_D", "p_ICU", "p_ICU_2",
@@ -268,7 +268,7 @@ make_transform <- function(baseline) {
   epoch_dates <- baseline$epoch_dates
 
   ## WARNING: vaccine_eligibility_min_age and vaccine_uptake (probably
-  ## akong others) are not actually used here because we use a
+  ## among others) are not actually used here because we use a
   ## schedule that has been built.  So these exist only so that they
   ## can be used in onward simulations that do not update these
   ## parameters (such as the MTPs).  This will be tidied up once we
