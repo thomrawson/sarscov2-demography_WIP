@@ -22,7 +22,7 @@ age_cols <- grep("[0-9]", colnames(ONS_population_projections), value = TRUE)
 england_row <- ONS_population_projections %>% 
   summarise(across(all_of(age_cols), sum, na.rm = TRUE)) %>%
   mutate(AREA = "england",
-         CODE = NA,          # or whatever value you want
+         CODE = NA,          
          scenario = population_assumptions) %>% 
   select(CODE, AREA, all_of(age_cols), scenario)
 
@@ -35,8 +35,8 @@ pop_df <- do.call(rbind, pop_list) |>
   as.data.frame()
 colnames(pop_df) <- age_cols   # assign age columns
 pop_df$AREA <- regions
-pop_df$CODE <- NA            # or region codes 
-pop_df$scenario <- "2019_baseline"        # or set something
+pop_df$CODE <- NA            
+pop_df$scenario <- "2019_baseline"      
 
 df <- rbind(pop_df, ONS_population_projections)
 
@@ -48,16 +48,16 @@ df <- df %>%
     values_to = "population"      # new column containing population values
   )
 ###########################
-#Set factor levels:
+## Set factor levels:
 pop_long <- df %>%
   select(-CODE) %>%
   mutate(age_group = factor(age_group, levels = age_cols))
 pop_long$population <- as.numeric(pop_long$population)
-# Pivot wider to compute diffs easily
+## Pivot wider to compute diffs easily
 pop_wide <- pop_long %>%
   pivot_wider(names_from = scenario, values_from = population)
 
-# rename columns to easier names
+## rename columns to easier names
 pop_wide <- pop_wide %>%
   rename(
     baseline = `2019_baseline`,
@@ -222,7 +222,7 @@ make_region_pct_plot <- function(region_name, show_x_labels = FALSE, show_y_labe
   x_lab <- if (show_x_labels) "Age group" else NULL
   y_lab <- if (show_y_labels) "Difference (%)" else NULL
   
-  # theme elements: choose element or blank with standard if(...) else ...
+  # theme elements:
   x_text_el <- if (show_x_labels) element_text(angle = 45, hjust = 1) else element_blank()
   x_ticks_el <- if (show_x_labels) element_line() else element_blank()
   
@@ -254,7 +254,7 @@ region_plots <- lapply(seq_along(regions), function(i) {
   # Only show x axis labels for the bottom-left panel to avoid clutter
   show_x <- FALSE
   show_y <- FALSE
-  # If using 4x2 (nrow=4, ncol=2) the bottom row panels are indices 7 and 8:
+  # When using 4x2 (nrow=4, ncol=2) the bottom row panels are indices 7 and 8:
   # Show x labels for the 7th (left bottom) panel so readers can see age labels
   if(i %in% c(6,7)) show_x <- TRUE
   if(i %in% c(2,4,6)) show_y <- TRUE
@@ -347,10 +347,10 @@ print(grid_plot)
  # Use st_point_on_surface (safer than centroid for complex polygons)
  label_points <- nhs_joined %>%
    st_point_on_surface() %>%
-   #st_centroid() %>%             # optional fallback - but st_point_on_surface is preferred
+   #st_centroid() %>%             # optional - but st_point_on_surface is preferred
    st_transform(st_crs(nhs_joined))
  
- # Extract coordinates for plotting labels with geom_text (ggplot's geom_sf_text exists but we'll use coords)
+ # Extract coordinates for plotting labels with geom_text
  coords <- st_coordinates(label_points)
  label_df <- data.frame(coords, pct_change = nhs_joined$pct_change, AREA = nhs_joined$AREA)
  
@@ -548,7 +548,7 @@ print(grid_plot)
  vaccine_current_df_extended <- bind_rows(vaccine_current_df_reduced, new_rows) %>%
    arrange(region, time, age_group, version, vaccine_strata)
  
- # 5) Rename and relevel
+ # 5) Rename and re-level
  vaccine_current_df_extended <- vaccine_current_df_extended %>%
    mutate(
      vaccine_strata = vaccine_strata %>%
