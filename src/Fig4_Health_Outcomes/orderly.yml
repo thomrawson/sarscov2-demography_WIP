@@ -15,8 +15,8 @@ artefacts:
   - staticgraph:
       description: supplementary figures
       filenames:
-        - Fig2.png
-        - Fig2.pdf
+        - Fig4.png
+        - Fig4.pdf
   - data:
       description: Already processed data
       filenames:

@@ -78,7 +78,7 @@ england_data <- england_data %>%
 # It's all the pillar 2 data
 colnames(england_data)[which(!(colnames(england_data) %in% colnames(england_totals)))]
 
-#Add together the age_specific hospitalisations so I can focus on totals:
+#Add together the age_specific hospitalisations to focus on totals:
 england_data <- england_data %>%
   mutate(total_confirmed_admissions = rowSums(across(c("admissions_0_9",                         
                                        "admissions_10_19",  "admissions_20_29",                       
@@ -120,7 +120,7 @@ p1 <- plot_time_series(p1_sim_data, p1_real_data,
                        "Daily Hospitalisations", "england")
 p1 <- p1 + ggtitle("Daily Confirmed Hospitalisations")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p1.png",
+  filename = "Figures/individual_panels/Fig4_p1.png",
   plot = p1,
   width = 10,      # inches
   height = 6,      # inches
@@ -131,7 +131,7 @@ p1_per_capita <- plot_time_series_per_capita(p1_sim_data, p1_real_data,
                        "Daily Hospitalisations", "england")
 p1_per_capita <- p1_per_capita + ggtitle("Daily new confirmed hospitalisations per capita - England")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p1_per_capita.png",
+  filename = "Figures/individual_panels/Fig4_p1_per_capita.png",
   plot = p1_per_capita,
   width = 10,      # inches
   height = 6,      # inches
@@ -145,7 +145,7 @@ for(r in regions){
   p <- plot_time_series(p1_sim_data, p1_real_data,
                         "Daily Hospitalisations", r)
   ggsave(
-    filename = sprintf("Figures/individual_panels/by_region/Fig2_p1_%s.png", r),
+    filename = sprintf("Figures/individual_panels/by_region/Fig4_p1_%s.png", r),
     plot = p,
     width = 10,      # inches
     height = 6,      # inches
@@ -160,7 +160,7 @@ p2_sim_data <- simulation_data %>%
 p2 <- plot_cumulative(p2_sim_data, "Hospitalisations \n(thousands)", "england")
 p2 <- p2 + ggtitle("Cumulative Daily Confirmed Hospitalisations")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p2.png",
+  filename = "Figures/individual_panels/Fig4_p2.png",
   plot = p2,
   width = 10, height = 6, dpi = 320        
 )
@@ -168,7 +168,7 @@ ggsave(
 p2_per_capita <- plot_cumulative_per_capita(p2_sim_data, "Hospitalisations", "england")
 p2_per_capita <- p2_per_capita + ggtitle("Cumulative Daily Confirmed Hospitalisations Per Capita")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p2_per_capita.png",
+  filename = "Figures/individual_panels/Fig4_p2_per_capita.png",
   plot = p2_per_capita,
   width = 10, height = 6, dpi = 320        
 )
@@ -176,7 +176,7 @@ ggsave(
 # Plot panel 1 with all scenarios
 p <- plot_time_series(p2_sim_data, p1_real_data, "Daily hosps", "england")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p1_all_scenarios.png",
+  filename = "Figures/individual_panels/Fig4_p1_all_scenarios.png",
   plot = p,
   width = 10, height = 6, dpi = 320        
 )
@@ -194,7 +194,7 @@ p3 <- plot_time_series(p3_sim_data, p3_real_data,
                        "Daily Hospital Deaths", "england")
 p3 <- p3 + ggtitle("Daily Hospital Deaths")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p3.png",
+  filename = "Figures/individual_panels/Fig4_p3.png",
   plot = p3,
   width = 10, height = 6, dpi = 320 
 )
@@ -203,7 +203,7 @@ p3_per_capita <- plot_time_series_per_capita(p3_sim_data, p3_real_data,
                        "Daily Hospital Deaths", "england")
 p3_per_capita <- p3_per_capita + ggtitle("Daily Hospital Deaths Per Capita")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p3_per_capita.png",
+  filename = "Figures/individual_panels/Fig4_p3_per_capita.png",
   plot = p3_per_capita,
   width = 10, height = 6, dpi = 320 
 )
@@ -221,7 +221,7 @@ p4 <- plot_time_series(p4_sim_data, p4_real_data,
                        "ICU beds", "england")
 p4 <- p4 + ggtitle("Occupied ICU beds - England")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p4.png",
+  filename = "Figures/individual_panels/Fig4_p4.png",
   plot = p4,
   width = 10, height = 6, dpi = 320 
 )
@@ -234,7 +234,7 @@ p5_sim_data <- simulation_data %>%
 p5 <- plot_cumulative(p5_sim_data, "Hospital \nDeaths (thousands)", "england", -20)
 p5 <- p5 + ggtitle("Cumulative Hospital Deaths")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p5.png",
+  filename = "Figures/individual_panels/Fig4_p5.png",
   plot = p5,
   width = 10, height = 6, dpi = 320        
 )
@@ -242,7 +242,7 @@ ggsave(
 p5_per_capita <- plot_cumulative_per_capita(p5_sim_data, "Hospitalisations", "england", -0.0003)
 p5_per_capita <- p5_per_capita + ggtitle("Cumulative Hospital Deaths Per Capita")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p5_per_capita.png",
+  filename = "Figures/individual_panels/Fig4_p5_per_capita.png",
   plot = p5_per_capita,
   width = 10, height = 6, dpi = 320        
 )
@@ -250,7 +250,7 @@ ggsave(
 # Plot panel 3 with all scenarios
 p <- plot_time_series(p5_sim_data, p3_real_data, "Daily Hospital Deaths", "england")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p3_all_scenarios.png",
+  filename = "Figures/individual_panels/Fig4_p3_all_scenarios.png",
   plot = p,
   width = 10, height = 6, dpi = 320        
 )
@@ -266,7 +266,7 @@ p6 <- plot_time_series(p6_sim_data, p6_real_data,
                        "IHR", "england")
 p6 <- p6 + ggtitle("IHR")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p6.png",
+  filename = "Figures/individual_panels/Fig4_p6.png",
   plot = p6,
   width = 10, height = 6, dpi = 320 
 )
@@ -282,7 +282,7 @@ p7 <- plot_time_series(p7_sim_data, p7_real_data,
                        "IFR", "england")
 p7 <- p7 + ggtitle("IFR")
 ggsave(
-  filename = "Figures/individual_panels/Fig2_p7.png",
+  filename = "Figures/individual_panels/Fig4_p7.png",
   plot = p7,
   width = 10, height = 6, dpi = 320 
 )
@@ -290,7 +290,7 @@ ggsave(
 #################################################
 # Put together a final figure
 
-Fig2 <- plot_grid(p1, p2, 
+Fig4 <- plot_grid(p1, p2, 
                   p3 + theme(legend.position = "none"), 
                   p5 + theme(legend.position = "none"), 
                   p6 + theme(legend.position = "none"), 
@@ -299,8 +299,8 @@ Fig2 <- plot_grid(p1, p2,
                   labels = "AUTO",
                   #rel_widths = c(1.5, 1), 
                   align = "v")
-Fig2 <- Fig2 + theme(plot.background = element_rect(fill = "white", colour = NA))
+Fig4 <- Fig4 + theme(plot.background = element_rect(fill = "white", colour = NA))
 #final_patch <- p_england | p_map + plot_layout(widths = c(5, 2))
 
-ggsave("Fig2.png", Fig2, width = 16, height = 12, dpi = 320)
-ggsave("Fig2.pdf", Fig2, width = 16, height = 12, dpi = 320)
+ggsave("Fig4.png", Fig4, width = 16, height = 12, dpi = 320)
+ggsave("Fig4.pdf", Fig4, width = 16, height = 12, dpi = 320)
