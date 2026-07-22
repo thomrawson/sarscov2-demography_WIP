@@ -1,0 +1,46 @@
+script: script.R
+
+parameters:
+  
+artefacts:
+  - staticgraph:
+      description: supplementary figures
+      filenames:
+        - FigS5.png
+        - FigS5.pdf
+        - contact_matrices_baseline_counterfactual_diff.pdf
+        - contact_matrices_baseline_counterfactual_diff.png
+
+packages:
+  - sircovid
+  - spimalot
+  - tidyr
+  - dplyr
+  - lubridate
+  - stringr
+  - forcats
+  - magrittr
+  - ggplot2
+  - scales
+  - cowplot
+  - sf
+  - viridis
+  - ggrepel
+  - ggspatial
+  - ggsci
+  - patchwork
+  
+resources:
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.cpg
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.dbf
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.prj
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shp.xml
+  - NHS_region_shp_files/NHSER_DEC_2023_EN_BGC.shx
+
+depends:
+  - 00_population_projections:
+      id: latest
+      use:
+        ONS_population_projections.rds: outputs/ONS_population_projections.rds
+  
